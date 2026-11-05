@@ -5,6 +5,22 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.4.0] - 2026-11-05 (Interactive Tool Execution Studio & Tool-to-Evidence Bridge)
+
+### Added
+- **Interactive Tool Execution Studio (`ToolWorkbenchView.tsx`):**
+  - Integrated 7 live passive query presets: DNS & Perimeter Mail Security (`dig` RFC 7208), Certificate Transparency Log Miner (`crt.sh` RFC 6962), Typosquatting Threat Matrix (`dnstwist`), Autonomous BGP Routing & Netblocks (BGPView/RIPE), Document Metadata & EXIF Forensics (`exiftool`), Web Preservation Semantic Drift Diff (Wayback CDX), and Local SpiderFoot Manager (`:5001`).
+- **Automated "Tool-to-Evidence" Bridge:**
+  - One-click transformation: Tool Output $\rightarrow$ Browser SHA-256 Checksum Calculation $\rightarrow$ Admiralty Confidence Scoring $\rightarrow$ Evidence Repository Registration.
+- **"Tool-to-Graph" Entity Extraction:**
+  - Automatically parses discovered subdomains, IP blocks, and author identities from raw stdout/JSON and injects them onto the interactive Relationship Graph.
+- **Triage Lead Generation Bridge:**
+  - One-click queuing of anomalous indicators directly into the Lead Generation Queue.
+- **Direct Navigation & UI Controls:**
+  - Added dedicated "Tool Runner Studio" button in the executive header and command sidebar.
+
+---
+
 ## [1.3.0] - 2026-11-04 (Professional OSINT Analyst Dashboard & PostgreSQL Stack)
 
 ### Added

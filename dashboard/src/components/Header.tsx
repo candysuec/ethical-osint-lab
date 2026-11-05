@@ -15,6 +15,7 @@ interface HeaderProps {
   workbenchMode: 'GUIDED' | 'STUDIO';
   onToggleWorkbenchMode: (mode: 'GUIDED' | 'STUDIO') => void;
   onOpenQuickIntake: () => void;
+  onOpenTools: () => void;
   onLoadDemo: () => void;
 }
 
@@ -36,6 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
   workbenchMode,
   onToggleWorkbenchMode,
   onOpenQuickIntake,
+  onOpenTools,
   onLoadDemo
 }) => {
   const getTlpBadge = (tlp: TlpClassification) => {
@@ -91,6 +93,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Center / Right Controls */}
         <div className="flex items-center space-x-3">
+          {/* Tool Runner Studio Button */}
+          <button
+            onClick={onOpenTools}
+            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 border border-cyber-cyan/40 text-cyber-cyan text-xs font-mono px-3 py-1.5 rounded transition-colors"
+            title="Launch Interactive Tool Runner"
+          >
+            <Terminal className="w-3.5 h-3.5" />
+            <span className="font-bold">Tool Runner Studio</span>
+          </button>
+
           {/* Quick Demo Target Button */}
           <button
             onClick={onLoadDemo}

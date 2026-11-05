@@ -7,6 +7,7 @@ import {
 
 export type SubsystemView = 
   | 'CASES'
+  | 'TOOLS'
   | 'INTAKE'
   | 'LEADS'
   | 'ENTITIES'
@@ -39,7 +40,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onSelectView, coun
       category: 'COMMAND & CONTROL',
       items: [
         { id: 'CASES' as SubsystemView, label: 'Case Management', icon: FolderKanban, count: counts.cases },
-        { id: 'INTAKE' as SubsystemView, label: 'Investigation Intake', icon: Terminal },
+        { id: 'TOOLS' as SubsystemView, label: 'Tool Runner Studio', icon: Terminal, badgeColor: 'bg-cyan-500/20 text-cyan-400' },
+        { id: 'INTAKE' as SubsystemView, label: 'Investigation Intake', icon: Inbox },
         { id: 'LEADS' as SubsystemView, label: 'Lead Generation Queue', icon: Inbox, count: counts.leads, badgeColor: 'bg-amber-500/20 text-amber-400' }
       ]
     },

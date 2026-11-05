@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
 import { GuidedLifecycleView } from './components/GuidedLifecycleView';
+import { ToolWorkbenchView } from './components/ToolWorkbenchView';
 import { CaseManagementView } from './components/CaseManagementView';
 import { IntakeView } from './components/IntakeView';
 import { LeadQueueView } from './components/LeadQueueView';
@@ -63,6 +64,25 @@ export const App: React.FC = () => {
       timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
     };
     setAuditLogs([newLog, ...auditLogs]);
+  };
+
+  const handleAddEvidence = (item: EvidenceItem) => {
+    setEvidence([item, ...evidence]);
+    const newLog = {
+      id: `aud-${Date.now()}`,
+      caseId: currentCase.id,
+      userId: 'Lead_Investigator_Chevalier',
+      actionType: 'EVIDENCE_ADDED',
+      targetTable: 'evidence_items',
+      deltaSummary: `Registered new evidence artifact ${item.itemNumber} (${item.title}) with SHA-256 ${item.sha256Hash.slice(0, 16)}...`,
+      clientIp: '127.0.0.1 (Enclave)',
+      timestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
+    };
+    setAuditLogs([newLog, ...auditLogs]);
+  };
+
+  const handleAddEntity = (ent: Entity) => {
+    setEntities([ent, ...entities]);
   };
 
   const handlePromoteLead = (lead: Lead) => {
@@ -138,6 +158,10 @@ export const App: React.FC = () => {
         workbenchMode={workbenchMode}
         onToggleWorkbenchMode={setWorkbenchMode}
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
+        onOpenTools={() => {
+          setWorkbenchMode('STUDIO');
+          setActiveView('TOOLS');
+        }}
         onLoadDemo={handleLoadDemo}
       />
 
@@ -184,6 +208,15 @@ export const App: React.FC = () => {
                   currentCase={currentCase}
                   onSelectCase={setCurrentCase}
                   onCreateCase={handleCreateCase}
+                />
+              )}
+
+              {activeView === 'TOOLS' && (
+                <ToolWorkbenchView
+                  currentCase={currentCase}
+                  onAddEvidence={handleAddEvidence}
+                  onAddEntity={handleAddEntity}
+                  onAddLead={handleAddLead}
                 />
               )}
 
