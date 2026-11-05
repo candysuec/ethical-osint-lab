@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Header, WorkbenchMode } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
-import { MissionControlView } from './components/MissionControlView';
-import { GuidedLifecycleView } from './components/GuidedLifecycleView';
+import { InvestigationConsoleView } from './components/InvestigationConsoleView';
+import { CaseBrowserModal } from './components/CaseBrowserModal';
 import { ToolWorkbenchView } from './components/ToolWorkbenchView';
 import { BeginnerGuideModal } from './components/BeginnerGuideModal';
 import { CaseManagementView } from './components/CaseManagementView';
@@ -27,17 +27,18 @@ import {
   initialGaps, initialReport 
 } from './data/mockData';
 
+import { missionsData, Mission } from './data/missionsData';
 import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './types';
 
 export const App: React.FC = () => {
-  // Navigation & Mode State - Defaults to Beginner-Friendly MISSION_CONTROL!
-  const [workbenchMode, setWorkbenchMode] = useState<WorkbenchMode>('MISSION_CONTROL');
-  const [activeStage, setActiveStage] = useState<number>(1);
+  // Navigation & Workspace State - Defaults to the clean Investigation CONSOLE!
+  const [workbenchMode, setWorkbenchMode] = useState<WorkbenchMode>('CONSOLE');
   const [activeView, setActiveView] = useState<SubsystemView>('CASES');
 
-  // Gamification & Mission Progress State
-  const [completedMissionIds, setCompletedMissionIds] = useState<string[]>(['mission-01']);
-  const [totalXp, setTotalXp] = useState<number>(100);
+  // Active Curriculum Case (Defaults to Case 02: Fastly Mail Spoofing Audit)
+  const [selectedCurriculumCase, setSelectedCurriculumCase] = useState<Mission>(missionsData[1]);
+  const [completedCaseIds, setCompletedCaseIds] = useState<string[]>(['mission-01']);
+  const [showCaseBrowser, setShowCaseBrowser] = useState<boolean>(false);
 
   // Core Data State
   const [cases, setCases] = useState<Case[]>(initialCases);
@@ -58,12 +59,18 @@ export const App: React.FC = () => {
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   // Handlers
-  const handleCompleteMission = (missionId: string, earnedXp: number, evidenceItem: EvidenceItem) => {
-    if (!completedMissionIds.includes(missionId)) {
-      setCompletedMissionIds([...completedMissionIds, missionId]);
-      setTotalXp(totalXp + earnedXp);
+  const handleSaveEvidenceFromConsole = (newEv: EvidenceItem) => {
+    handleAddEvidence(newEv);
+    if (!completedCaseIds.includes(selectedCurriculumCase.id)) {
+      setCompletedCaseIds([...completedCaseIds, selectedCurriculumCase.id]);
     }
-    handleAddEvidence(evidenceItem);
+  };
+
+  const handleNextCurriculumCase = () => {
+    const currentIndex = missionsData.findIndex(m => m.id === selectedCurriculumCase.id);
+    if (currentIndex >= 0 && currentIndex < missionsData.length - 1) {
+      setSelectedCurriculumCase(missionsData[currentIndex + 1]);
+    }
   };
 
   const handleAddLead = (newLead: Lead) => {
@@ -71,7 +78,7 @@ export const App: React.FC = () => {
     const newLog = {
       id: `aud-${Date.now()}`,
       caseId: currentCase.id,
-      userId: 'Student_Analyst_Chevalier',
+      userId: 'Lead_Investigator_Chevalier',
       actionType: 'LEAD_INGESTED',
       targetTable: 'leads',
       deltaSummary: `Ingested new lead ${newLead.leadCode} (${newLead.inputType}: ${newLead.normalizedValue})`,
@@ -86,7 +93,7 @@ export const App: React.FC = () => {
     const newLog = {
       id: `aud-${Date.now()}`,
       caseId: currentCase.id,
-      userId: 'Student_Analyst_Chevalier',
+      userId: 'Lead_Investigator_Chevalier',
       actionType: 'EVIDENCE_ADDED',
       targetTable: 'evidence_items',
       deltaSummary: `Registered new evidence artifact ${item.itemNumber} (${item.title}) with SHA-256 ${item.sha256Hash.slice(0, 16)}...`,
@@ -115,7 +122,7 @@ export const App: React.FC = () => {
       admiraltyReliability: 'B',
       admiraltyCredibility: '2',
       fullViewportVerified: true,
-      verifiedBy: 'Student_Analyst_Chevalier'
+      verifiedBy: 'Lead_Investigator_Chevalier'
     };
     setEvidence([newEv, ...evidence]);
   };
@@ -129,7 +136,7 @@ export const App: React.FC = () => {
       ...e,
       isConfirmed: true,
       disambiguationNotes: notesText,
-      resolvedBy: 'Student_Analyst_Chevalier',
+      resolvedBy: 'Lead_Investigator_Chevalier',
       resolvedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
     } : e));
   };
@@ -152,33 +159,22 @@ export const App: React.FC = () => {
     setCurrentCase(newCase);
   };
 
-  const handleLoadDemo = () => {
-    const nextCase = cases.find(c => c.id !== currentCase.id) || cases[0];
-    setCurrentCase(nextCase);
-  };
-
   return (
     <div className="flex flex-col h-screen w-screen bg-cyber-950 text-slate-200 overflow-hidden font-sans">
       {/* Universal Executive Header */}
       <Header
-        currentCase={currentCase}
-        cases={cases}
-        onSelectCase={setCurrentCase}
-        activeStage={activeStage}
-        onSelectStage={setActiveStage}
+        currentCase={selectedCurriculumCase}
+        onOpenCaseBrowser={() => setShowCaseBrowser(true)}
         workbenchMode={workbenchMode}
         onToggleWorkbenchMode={setWorkbenchMode}
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
-        onOpenTools={() => setWorkbenchMode('TOOL_ACADEMY')}
         onOpenGuide={() => setShowGuideModal(true)}
-        onLoadDemo={handleLoadDemo}
-        completedMissionsCount={completedMissionIds.length}
-        totalXp={totalXp}
+        completedCount={completedCaseIds.length}
       />
 
       {/* Main Body */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar visible only in Studio Mode for deep inspection */}
+        {/* Sidebar visible in Studio Mode for deep inspection */}
         {workbenchMode === 'STUDIO' && (
           <Sidebar
             activeView={activeView}
@@ -195,39 +191,26 @@ export const App: React.FC = () => {
 
         {/* Dynamic Subsystem Workspace */}
         <main className="flex-1 overflow-hidden bg-cyber-950 relative">
-          {workbenchMode === 'MISSION_CONTROL' && (
-            <MissionControlView
-              completedMissionIds={completedMissionIds}
-              onCompleteMission={handleCompleteMission}
-              onOpenStudio={() => setWorkbenchMode('STUDIO')}
-              onOpenGuide={() => setShowGuideModal(true)}
+          {workbenchMode === 'CONSOLE' && (
+            <InvestigationConsoleView
+              currentCase={selectedCurriculumCase}
+              onOpenCaseBrowser={() => setShowCaseBrowser(true)}
+              onOpenReport={() => {
+                setWorkbenchMode('STUDIO');
+                setActiveView('REPORT');
+              }}
+              onSaveEvidence={handleSaveEvidenceFromConsole}
+              isCaseCompleted={completedCaseIds.includes(selectedCurriculumCase.id)}
+              onNextCase={handleNextCurriculumCase}
             />
           )}
 
-          {workbenchMode === 'TOOL_ACADEMY' && (
+          {workbenchMode === 'TOOL_SANDBOX' && (
             <ToolWorkbenchView
               currentCase={currentCase}
               onAddEvidence={handleAddEvidence}
               onAddEntity={handleAddEntity}
               onAddLead={handleAddLead}
-            />
-          )}
-
-          {workbenchMode === 'LIFECYCLE' && (
-            <GuidedLifecycleView
-              currentCase={currentCase}
-              activeStage={activeStage}
-              onSetStage={setActiveStage}
-              leads={leads.filter(l => l.caseId === currentCase.id || l.caseId === 'case-001')}
-              entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
-              evidence={evidence.filter(ev => ev.caseId === currentCase.id || ev.caseId === 'case-001')}
-              sources={sources}
-              timeline={timeline.filter(t => t.caseId === currentCase.id || t.caseId === 'case-001')}
-              report={report}
-              onPromoteLead={handlePromoteLead}
-              onConfirmEntity={handleConfirmEntity}
-              onOpenIntake={() => setShowQuickIntakeModal(true)}
-              onSwitchToStudio={() => setWorkbenchMode('STUDIO')}
             />
           )}
 
@@ -339,12 +322,21 @@ export const App: React.FC = () => {
         </main>
       </div>
 
+      {/* Case Browser Modal */}
+      <CaseBrowserModal
+        isOpen={showCaseBrowser}
+        onClose={() => setShowCaseBrowser(false)}
+        currentCaseId={selectedCurriculumCase.id}
+        onSelectCase={(m) => setSelectedCurriculumCase(m)}
+        completedCaseIds={completedCaseIds}
+      />
+
       {/* Plain English Guide Modal */}
       <BeginnerGuideModal
         isOpen={showGuideModal}
         onClose={() => setShowGuideModal(false)}
         onSelectToolAndRun={(_tool) => {
-          setWorkbenchMode('TOOL_ACADEMY');
+          setWorkbenchMode('TOOL_SANDBOX');
         }}
       />
 
