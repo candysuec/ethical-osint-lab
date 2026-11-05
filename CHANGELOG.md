@@ -5,6 +5,19 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.8.0] - 2026-11-05 (Live Containerized Tool Execution Engine Bridge)
+
+### Added
+- **Live Tool Execution Daemon (`tool_daemon.py` on Port `:5002`):**
+  - Lightweight HTTP tool execution microservice that bridges frontend requests to the `osint_cli_workstation` Docker container.
+  - Safely sanitizes target parameters and executes real Linux commands (`dig`, `whois`, `curl`/`crt.sh`) against public DNS and public certificate transparency ledgers.
+  - Automatically falls back to verified curriculum presets if the container daemon is offline.
+- **Dynamic Frontend Execution Client (`toolRunner.ts`):**
+  - Integrated `executeLiveOSINTTool` client inside `InvestigationConsoleView.tsx`.
+  - When the analyst clicks **Run Query** (or presses `Ctrl+Enter`), the dashboard attempts real-time query execution inside `osint_cli_workstation`, updates the terminal with authentic stdout, and displays a live `CONTAINER: osint_cli_workstation` telemetry pulse badge.
+
+---
+
 ## [1.7.0] - 2026-11-05 (Interactive Two-Source Gate, Hotkeys & Forensic Dossier Export)
 
 ### Added

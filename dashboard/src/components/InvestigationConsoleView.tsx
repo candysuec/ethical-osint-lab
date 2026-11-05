@@ -3,11 +3,12 @@ import {
   Play, Terminal, CheckCircle2, Shield, AlertTriangle, 
   FileText, Copy, Check, RefreshCw, 
   Sparkles, FolderOpen, ArrowRight, ShieldCheck,
-  Hash, Database, Download, Command
+  Hash, Database, Download, Command, Radio
 } from 'lucide-react';
 import { Mission } from '../data/missionsData';
 import { EvidenceItem } from '../types';
 import { calculateSha256 } from '../utils/crypto';
+import { executeLiveOSINTTool } from '../utils/toolRunner';
 
 interface InvestigationConsoleViewProps {
   currentCase: Mission;
@@ -31,6 +32,11 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
   const [evidenceSaved, setEvidenceSaved] = useState(isCaseCompleted);
   const [calculatedHash, setCalculatedHash] = useState<string>('');
   
+  // Live output state (can update from real container daemon)
+  const activeStep = currentCase.steps[0];
+  const [currentOutput, setCurrentOutput] = useState<string>(activeStep.output);
+  const [isLiveTelemetry, setIsLiveTelemetry] = useState<boolean>(false);
+
   // Interactive Two-Source Corroboration State
   const [source1Verified, setSource1Verified] = useState<boolean>(true);
   const [source2Verified, setSource2Verified] = useState<boolean>(false);
@@ -38,11 +44,11 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
   // Mobile / Tablet Tab State for Pillar Navigation (< 1024px)
   const [mobilePillarTab, setMobilePillarTab] = useState<'SCOPE' | 'TOOL' | 'PROOF'>('TOOL');
 
-  const activeStep = currentCase.steps[0];
-
   // Dynamic Cryptographic Hashing calculation using Web Crypto API
   useEffect(() => {
     let isMounted = true;
+    setCurrentOutput(activeStep.output);
+    setIsLiveTelemetry(false);
     calculateSha256(activeStep.output).then((hash) => {
       if (isMounted) setCalculatedHash(hash);
     });
@@ -53,13 +59,26 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
 
   const handleRunQuery = useCallback(async () => {
     setIsRunningQuery(true);
-    setTimeout(async () => {
-      const freshHash = await calculateSha256(activeStep.output);
-      setCalculatedHash(freshHash);
-      setIsRunningQuery(false);
-      setSource1Verified(true);
-    }, 350);
-  }, [activeStep.output]);
+    
+    // Determine tool identifier for daemon
+    const toolName = activeStep.tool.toLowerCase().includes('whois') ? 'whois' 
+      : activeStep.tool.toLowerCase().includes('crt.sh') ? 'crtsh' 
+      : 'dig';
+
+    const { output: freshOutput, isLive } = await executeLiveOSINTTool(
+      toolName,
+      currentCase.target,
+      'TXT',
+      activeStep.output
+    );
+
+    setCurrentOutput(freshOutput);
+    setIsLiveTelemetry(isLive);
+    const freshHash = await calculateSha256(freshOutput);
+    setCalculatedHash(freshHash);
+    setIsRunningQuery(false);
+    setSource1Verified(true);
+  }, [activeStep.tool, activeStep.output, currentCase.target]);
 
   const handleCopyHash = () => {
     navigator.clipboard.writeText(calculatedHash);
@@ -336,11 +355,14 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
               className="bg-black/95 border border-slate-800 rounded-lg p-3.5 font-mono text-xs text-slate-300 shadow-inner overflow-x-auto flex-1 min-h-[160px]"
             >
               <div className="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/80 pb-1.5 mb-2.5 select-none">
-                <span>STDOUT OUTPUT</span>
-                <span>ENCLAVE: PASSIVE TELEMETRY</span>
+                <span className="flex items-center space-x-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${isLiveTelemetry ? 'bg-cyan-400 animate-pulse' : 'bg-emerald-400'}`}></span>
+                  <span>{isLiveTelemetry ? 'LIVE DOCKER CLI STREAM (PORT :5002)' : 'STDOUT TELEMETRY'}</span>
+                </span>
+                <span className="text-slate-400 font-bold">{isLiveTelemetry ? 'CONTAINER: osint_cli_workstation' : 'ENCLAVE: PASSIVE TELEMETRY'}</span>
               </div>
               <pre className="whitespace-pre-wrap leading-relaxed text-[11px] font-mono">
-                {activeStep.output}
+                {currentOutput}
               </pre>
 
               {/* Glowing Line Callout */}
