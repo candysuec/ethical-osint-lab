@@ -5,6 +5,20 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.9.0] - 2026-11-05 (Student & Instructor Operational Field Manual)
+
+### Added
+- **Student & Instructor Operational Field Manual (`docs/13_STUDENT_OPERATIONAL_FIELD_MANUAL.md`):**
+  - Comprehensive operational guide detailing system architecture, navigation shortcuts, and the 7-phase intelligence lifecycle.
+  - Step-by-step guided walkthroughs for 3 real-world training scenarios:
+    - **Scenario A (Beginner):** Case 02 – Domain Mail Spoofing & Phishing Defense (SPF/DMARC) on `fastly.com`.
+    - **Scenario B (Intermediate):** Case 03 – Certificate Transparency Log Excavation on `cloudflare.com`.
+    - **Scenario C (Advanced):** Case 22 – Brand Impersonation & Typosquatting Threat Matrix.
+  - Subsystem reference index mapping every sidebar tool to its practical analytical output.
+  - Product backlog summary documenting remaining development roadmap items (Capstone, Graph Transforms, Drag-and-Drop EXIF, PostgreSQL Sync).
+
+---
+
 ## [1.8.0] - 2026-11-05 (Live Containerized Tool Execution Engine Bridge)
 
 ### Added
