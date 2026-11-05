@@ -5,6 +5,31 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.2.0] - 2026-11-04 (Complete 30-Case Curriculum, Standardized Forensics & Capstone)
+
+### Added
+- **Complete 30 Graded Case Files Suite (`cases/`):**
+  - **Tier 1: Beginner Cases (01–10):** Corporate subsidiaries (`CASE-BEG-001`), DNS SPF/DMARC mail defense (`CASE-BEG-002`), Certificate Transparency logs (`CASE-BEG-003`), Wayback Machine historical drift (`CASE-BEG-004`), Robots.txt/sitemap taxonomy (`CASE-BEG-005`), PDF/EXIF document metadata forensics (`CASE-BEG-006`), BGP ASN/IP prefix mapping (`CASE-BEG-007`), Git commit & CI/CD footprinting (`CASE-BEG-008`), SEC DEF 14A directorship graphing (`CASE-BEG-009`), and Dangling CNAME takeover audits (`CASE-BEG-010`).
+  - **Tier 2: Intermediate Cases (11–20):** Maltego entity graph pivots (`CASE-INT-011`), Pre-GDPR historical WHOIS archeology (`CASE-INT-012`), Reverse IP co-tenancy & neighbor risk (`CASE-INT-013`), OpenAPI/Swagger schema mining (`CASE-INT-014`), X.509 SKI & serial number pivots (`CASE-INT-015`), Open-source bot username correlation with false-positive filtering (`CASE-INT-016`), Cloud bucket namespace discovery (`CASE-INT-017`), PyPI/npm SBOM & OpenSSF supply chain audits (`CASE-INT-018`), Domain breach telemetry & SEC Item 1.05 disclosures (`CASE-INT-019`), and OpenStreetMap geospatial campus verification (`CASE-INT-020`).
+  - **Tier 3: Advanced Cases (21–30):** Adversary Diamond Model infrastructure clustering (`CASE-ADV-021`), `dnstwist` brand impersonation & MX triage (`CASE-ADV-022`), Doppelgänger media & DISARM narrative mapping (`CASE-ADV-023`), BGP route leak forensics & RPKI validation (`CASE-ADV-024`), V3 Onion cryptography & OPSEC headers (`CASE-ADV-025`), Bitcoin blockchain ransomware transaction forensics (`CASE-ADV-026`), Third-party SaaS OAuth permission drift (`CASE-ADV-027`), JARM C2 fingerprint hunting & Snort/Suricata rules (`CASE-ADV-028`), M&A pre-acquisition attack surface debt scoring (`CASE-ADV-029`), and Threat Intel to SOC Detection handoff with production SIGMA rules (`CASE-ADV-030`).
+  - **Master Case Directory (`cases/README.md`):** Complete navigational syllabus linking all 30 case files with required toolsets and investigative focus.
+- **Forensic Evidence & Validation Templates (`templates/`):**
+  - **Forensic Screenshot Standard (`templates/SCREENSHOT_HANDOFF_TEMPLATE.md`):** Mandates ISO/IEC 27037 compliance, uncut browser address bar with SSL padlock, visible OS taskbar clock, dual Wayback/Archive.is mirrors, and immediate SHA-256 checksums.
+  - **Source Validation Rubric (`templates/SOURCE_VALIDATION_RUBRIC.md`):** Codified NATO STANAG 2022 Admiralty 6×6 Matrix (Source Reliability A–F $\times$ Information Credibility 1–6) with strict anti-circular reporting rules and the Two-Source Rule.
+  - **Comprehensive Intelligence Assessment Report (`templates/FINAL_INTELLIGENCE_REPORT_TEMPLATE.md`):** Complete deliverable framework containing the 1-Page Executive BLUF, external attack surface architecture graph, in-depth technical findings, master IOC ledger, and production SIGMA detection rules.
+- **Section 11: Competency Matrix & Progress Dashboard (`docs/11_SCORING_AND_COMPETENCY_DASHBOARD.md`):**
+  - 4 Progressive Competency Tiers aligned with the NIST NICE Cybersecurity Workforce Framework (SP-ARC-001).
+  - 100-Point Objective Case Grading Rubric (Evidence Integrity 25%, Technical Accuracy 30%, Analytical Depth 25%, Professional Communication 20%).
+  - Four verifiable career portfolio badges: CDOS, CCIA, CCTIH, and Principal OSINT Strategist.
+- **Section 12: Capstone Investigation (`docs/12_CAPSTONE_INVESTIGATION.md`):**
+  - "Operation Horizon Shield" — 20-30 hour simulated comprehensive pre-IPO attack surface audit of *Aether Dynamics Global Corporation*.
+  - 6-phase roadmap covering regulatory filings, perimeter DNS, shadow IT cloud audit, adversary threat hunting, SBOM provenance, board presentation deck, and SOC IR playbooks.
+
+### Changed
+- Updated `README.md` canonical table of contents to provide active links across all 12 curriculum modules and templates.
+
+---
+
 ## [1.1.0] - 2026-11-04 (Initial Full Academy Curriculum & Docker Runtime)
 
 ### Added
