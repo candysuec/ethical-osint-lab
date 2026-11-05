@@ -5,6 +5,30 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.5.0] - 2026-11-05 (Mission Control Learning Mode & 30 Guided Cases)
+
+### Added
+- **Default "Mission Control" Learning Mode (`MissionControlView.tsx`):**
+  - Overhauled the dashboard default view (`http://localhost:5180`) into an intuitive, guided, mission-driven interface inspired by TryHackMe and Duolingo.
+  - Students progress through real-world corporate investigation cases with zero cognitive overwhelm.
+- **Interactive 30-Mission Dataset (`missionsData.ts`):**
+  - Fully mapped all 30 repository curriculum case files into interactive missions across 3 tiers:
+    - **Beginner (Cases 01–10):** SEC EDGAR corporate subsidiaries, DNS & mail security SPF/DMARC auditing, Certificate Transparency logs, Wayback historical drift, robots.txt leaks, document EXIF forensics, BGP ASN ranges, Git commit secrets, boardroom directorships, dangling CNAME subdomains.
+    - **Intermediate (Cases 11–20):** Maltego link graphing, historical WHOIS unmasking, reverse IP co-tenancy, OpenAPI/Swagger schema discovery, X.509 SKI key fingerprinting, synthetic username correlation, S3 cloud storage audits, SBOM supply chain vulnerabilities, breach telemetry k-Anonymity, geospatial facility reconnaissance.
+    - **Advanced (Cases 21–30):** APT infrastructure clustering, brand typosquatting weaponization, disinformation network attribution, BGP route hijacking detection, Tor hidden service clearnet unmasking, ransomware cryptocurrency tracing, SaaS OAuth drift governance, JARM C2 fingerprinting, M&A due diligence, SOC SIGMA detection rule generation.
+- **Plain-English Visual Decoder Cards:**
+  - Displays simulated terminal queries alongside highlighted findings and plain-English real-world explanations (e.g. explaining why `p=none` allows scammers to forge emails from a CEO).
+  - Includes defensive remediation steps and NATO STANAG 2022 Admiralty confidence ratings (`A1` to `F6`).
+- **Comprehension Knowledge Checks & XP Progression System:**
+  - Interactive mini-quizzes on each case with instant instructional feedback.
+  - XP progression engine with ranks from "Cadet OSINT Investigator" to "Master Cyber Intelligence Architect".
+  - One-click `[ 💾 Save Evidence & Claim XP ]` bridge automatically hashing artifacts into the Evidence Vault.
+- **Streamlined Executive Navigation (`Header.tsx`):**
+  - 4 clean top-level tabs: **Mission Control** (Default), **Tool Academy** (Sandbox), **Analyst Studio** (14-Tab Deep Platform), and **6-Stage Guide**.
+  - Live XP counter, rank badge, and curriculum completion meter.
+
+---
+
 ## [1.4.1] - 2026-11-05 (Plain-English Onboarding Guide & Interactive Tour)
 
 ### Added

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Header } from './components/Header';
+import { Header, WorkbenchMode } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
+import { MissionControlView } from './components/MissionControlView';
 import { GuidedLifecycleView } from './components/GuidedLifecycleView';
 import { ToolWorkbenchView } from './components/ToolWorkbenchView';
 import { BeginnerGuideModal } from './components/BeginnerGuideModal';
@@ -29,10 +30,14 @@ import {
 import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './types';
 
 export const App: React.FC = () => {
-  // Navigation & Lifecycle State
-  const [workbenchMode, setWorkbenchMode] = useState<'GUIDED' | 'STUDIO'>('GUIDED');
+  // Navigation & Mode State - Defaults to Beginner-Friendly MISSION_CONTROL!
+  const [workbenchMode, setWorkbenchMode] = useState<WorkbenchMode>('MISSION_CONTROL');
   const [activeStage, setActiveStage] = useState<number>(1);
   const [activeView, setActiveView] = useState<SubsystemView>('CASES');
+
+  // Gamification & Mission Progress State
+  const [completedMissionIds, setCompletedMissionIds] = useState<string[]>(['mission-01']);
+  const [totalXp, setTotalXp] = useState<number>(100);
 
   // Core Data State
   const [cases, setCases] = useState<Case[]>(initialCases);
@@ -48,18 +53,25 @@ export const App: React.FC = () => {
   const [gaps, setGaps] = useState<GapAnalysis[]>(initialGaps);
   const [report] = useState(initialReport);
 
-  // Quick Ingestion Modal
+  // Modals
   const [showQuickIntakeModal, setShowQuickIntakeModal] = useState<boolean>(false);
-  // Plain English Guide Modal
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   // Handlers
+  const handleCompleteMission = (missionId: string, earnedXp: number, evidenceItem: EvidenceItem) => {
+    if (!completedMissionIds.includes(missionId)) {
+      setCompletedMissionIds([...completedMissionIds, missionId]);
+      setTotalXp(totalXp + earnedXp);
+    }
+    handleAddEvidence(evidenceItem);
+  };
+
   const handleAddLead = (newLead: Lead) => {
     setLeads([newLead, ...leads]);
     const newLog = {
       id: `aud-${Date.now()}`,
       caseId: currentCase.id,
-      userId: 'Lead_Investigator_Chevalier',
+      userId: 'Student_Analyst_Chevalier',
       actionType: 'LEAD_INGESTED',
       targetTable: 'leads',
       deltaSummary: `Ingested new lead ${newLead.leadCode} (${newLead.inputType}: ${newLead.normalizedValue})`,
@@ -74,7 +86,7 @@ export const App: React.FC = () => {
     const newLog = {
       id: `aud-${Date.now()}`,
       caseId: currentCase.id,
-      userId: 'Lead_Investigator_Chevalier',
+      userId: 'Student_Analyst_Chevalier',
       actionType: 'EVIDENCE_ADDED',
       targetTable: 'evidence_items',
       deltaSummary: `Registered new evidence artifact ${item.itemNumber} (${item.title}) with SHA-256 ${item.sha256Hash.slice(0, 16)}...`,
@@ -103,7 +115,7 @@ export const App: React.FC = () => {
       admiraltyReliability: 'B',
       admiraltyCredibility: '2',
       fullViewportVerified: true,
-      verifiedBy: 'Lead_Investigator_Chevalier'
+      verifiedBy: 'Student_Analyst_Chevalier'
     };
     setEvidence([newEv, ...evidence]);
   };
@@ -117,7 +129,7 @@ export const App: React.FC = () => {
       ...e,
       isConfirmed: true,
       disambiguationNotes: notesText,
-      resolvedBy: 'Lead_Investigator_Chevalier',
+      resolvedBy: 'Student_Analyst_Chevalier',
       resolvedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
     } : e));
   };
@@ -141,7 +153,6 @@ export const App: React.FC = () => {
   };
 
   const handleLoadDemo = () => {
-    // Cycle between existing cases
     const nextCase = cases.find(c => c.id !== currentCase.id) || cases[0];
     setCurrentCase(nextCase);
   };
@@ -154,19 +165,15 @@ export const App: React.FC = () => {
         cases={cases}
         onSelectCase={setCurrentCase}
         activeStage={activeStage}
-        onSelectStage={(stg) => {
-          setActiveStage(stg);
-          setWorkbenchMode('GUIDED');
-        }}
+        onSelectStage={setActiveStage}
         workbenchMode={workbenchMode}
         onToggleWorkbenchMode={setWorkbenchMode}
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
-        onOpenTools={() => {
-          setWorkbenchMode('STUDIO');
-          setActiveView('TOOLS');
-        }}
+        onOpenTools={() => setWorkbenchMode('TOOL_ACADEMY')}
         onOpenGuide={() => setShowGuideModal(true)}
         onLoadDemo={handleLoadDemo}
+        completedMissionsCount={completedMissionIds.length}
+        totalXp={totalXp}
       />
 
       {/* Main Body */}
@@ -188,7 +195,25 @@ export const App: React.FC = () => {
 
         {/* Dynamic Subsystem Workspace */}
         <main className="flex-1 overflow-hidden bg-cyber-950 relative">
-          {workbenchMode === 'GUIDED' ? (
+          {workbenchMode === 'MISSION_CONTROL' && (
+            <MissionControlView
+              completedMissionIds={completedMissionIds}
+              onCompleteMission={handleCompleteMission}
+              onOpenStudio={() => setWorkbenchMode('STUDIO')}
+              onOpenGuide={() => setShowGuideModal(true)}
+            />
+          )}
+
+          {workbenchMode === 'TOOL_ACADEMY' && (
+            <ToolWorkbenchView
+              currentCase={currentCase}
+              onAddEvidence={handleAddEvidence}
+              onAddEntity={handleAddEntity}
+              onAddLead={handleAddLead}
+            />
+          )}
+
+          {workbenchMode === 'LIFECYCLE' && (
             <GuidedLifecycleView
               currentCase={currentCase}
               activeStage={activeStage}
@@ -204,7 +229,9 @@ export const App: React.FC = () => {
               onOpenIntake={() => setShowQuickIntakeModal(true)}
               onSwitchToStudio={() => setWorkbenchMode('STUDIO')}
             />
-          ) : (
+          )}
+
+          {workbenchMode === 'STUDIO' && (
             <>
               {activeView === 'CASES' && (
                 <CaseManagementView
@@ -317,8 +344,7 @@ export const App: React.FC = () => {
         isOpen={showGuideModal}
         onClose={() => setShowGuideModal(false)}
         onSelectToolAndRun={(_tool) => {
-          setWorkbenchMode('STUDIO');
-          setActiveView('TOOLS');
+          setWorkbenchMode('TOOL_ACADEMY');
         }}
       />
 

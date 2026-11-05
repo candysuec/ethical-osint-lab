@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
-  Shield, ShieldAlert, Clock, Terminal, Search, ChevronRight,
-  Layers, Network, FileCheck, CheckCircle2, AlertTriangle, 
-  HelpCircle, Sparkles, SlidersHorizontal, BookOpen
+  Shield, Terminal, Layers, BookOpen, 
+  HelpCircle, Sparkles, Trophy, Wrench, Gamepad2
 } from 'lucide-react';
 import { Case, TlpClassification } from '../types';
+
+export type WorkbenchMode = 'MISSION_CONTROL' | 'TOOL_ACADEMY' | 'STUDIO' | 'LIFECYCLE';
 
 interface HeaderProps {
   currentCase: Case;
@@ -12,12 +13,14 @@ interface HeaderProps {
   onSelectCase: (c: Case) => void;
   activeStage: number;
   onSelectStage: (stage: number) => void;
-  workbenchMode: 'GUIDED' | 'STUDIO';
-  onToggleWorkbenchMode: (mode: 'GUIDED' | 'STUDIO') => void;
+  workbenchMode: WorkbenchMode;
+  onToggleWorkbenchMode: (mode: WorkbenchMode) => void;
   onOpenQuickIntake: () => void;
   onOpenTools: () => void;
   onOpenGuide: () => void;
   onLoadDemo: () => void;
+  completedMissionsCount: number;
+  totalXp: number;
 }
 
 export const stages = [
@@ -33,14 +36,12 @@ export const Header: React.FC<HeaderProps> = ({
   currentCase, 
   cases, 
   onSelectCase, 
-  activeStage, 
-  onSelectStage,
-  workbenchMode,
+  workbenchMode, 
   onToggleWorkbenchMode,
   onOpenQuickIntake,
-  onOpenTools,
   onOpenGuide,
-  onLoadDemo
+  completedMissionsCount,
+  totalXp
 }) => {
   const getTlpBadge = (tlp: TlpClassification) => {
     switch (tlp) {
@@ -59,19 +60,19 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="h-14 px-4 sm:px-6 flex items-center justify-between border-b border-cyber-border/60">
         <div className="flex items-center space-x-3 sm:space-x-4">
           <div className="flex items-center space-x-2 text-cyber-cyan font-bold tracking-wider">
-            <div className="w-8 h-8 rounded bg-cyber-cyan/10 border border-cyber-cyan/40 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-cyber-cyan animate-pulse" />
+            <div className="w-8 h-8 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/40 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-cyber-cyan" />
             </div>
             <div>
-              <span className="text-sm font-mono tracking-wider font-extrabold text-slate-100 block">SOVEREIGN//OSINT</span>
-              <span className="text-[9px] font-mono text-cyan-400/80 -mt-1 block">ANALYST WORKBENCH</span>
+              <span className="text-sm font-mono tracking-wider font-extrabold text-slate-100 block">SOVEREIGN // OSINT LAB</span>
+              <span className="text-[9px] font-mono text-cyan-400/80 -mt-1 block">CURRICULUM & TRAINING</span>
             </div>
           </div>
 
-          <span className="text-slate-600 hidden sm:inline">|</span>
+          <span className="text-slate-700 hidden sm:inline">|</span>
 
           {/* Active Case Selector */}
-          <div className="flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-2">
             <select 
               value={currentCase.id}
               onChange={(e) => {
@@ -93,116 +94,97 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Center / Right Controls */}
+        {/* Center Primary Mode Switcher */}
+        <div className="flex items-center bg-cyber-950 p-1 rounded-xl border border-cyber-border text-xs font-mono">
+          <button
+            onClick={() => onToggleWorkbenchMode('MISSION_CONTROL')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              workbenchMode === 'MISSION_CONTROL' 
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold shadow-md' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Gamepad2 className="w-4 h-4" />
+            <span>Mission Control</span>
+            <span className="bg-black/30 text-[10px] px-1.5 py-0.2 rounded font-mono ml-1">
+              {completedMissionsCount}/30
+            </span>
+          </button>
+
+          <button
+            onClick={() => onToggleWorkbenchMode('TOOL_ACADEMY')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              workbenchMode === 'TOOL_ACADEMY' 
+                ? 'bg-cyber-cyan text-cyber-950 font-extrabold shadow-md' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Wrench className="w-3.5 h-3.5" />
+            <span>Tool Academy</span>
+          </button>
+
+          <button
+            onClick={() => onToggleWorkbenchMode('STUDIO')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              workbenchMode === 'STUDIO' 
+                ? 'bg-cyber-cyan text-cyber-950 font-extrabold shadow-md' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Analyst Studio (14-Tab)</span>
+          </button>
+
+          <button
+            onClick={() => onToggleWorkbenchMode('LIFECYCLE')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              workbenchMode === 'LIFECYCLE' 
+                ? 'bg-cyber-cyan text-cyber-950 font-extrabold shadow-md' 
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>6-Stage Guide</span>
+          </button>
+        </div>
+
+        {/* Right Controls: Points, Guide & Intake */}
         <div className="flex items-center space-x-3">
+          {/* Points Pill */}
+          <div className="hidden sm:flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-bold px-3 py-1.5 rounded-lg">
+            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <span>{totalXp} XP</span>
+          </div>
+
           {/* Beginner Onboarding Guide Button */}
           <button
             onClick={onOpenGuide}
-            className="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-mono px-3 py-1.5 rounded-lg transition-all animate-pulse"
+            className="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-mono px-3 py-1.5 rounded-lg transition-all"
             title="Open Plain English Step-by-Step Guide"
           >
             <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
-            <span className="font-bold">🔰 How to Use (Start Here)</span>
+            <span className="font-bold hidden md:inline">🔰 Guide</span>
           </button>
-
-          {/* Tool Runner Studio Button */}
-          <button
-            onClick={onOpenTools}
-            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 border border-cyber-cyan/40 text-cyber-cyan text-xs font-mono px-3 py-1.5 rounded transition-colors"
-            title="Launch Interactive Tool Runner"
-          >
-            <Terminal className="w-3.5 h-3.5" />
-            <span className="font-bold">Tool Runner Studio</span>
-          </button>
-
-          {/* Quick Demo Target Button */}
-          <button
-            onClick={onLoadDemo}
-            className="hidden md:flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-slate-300 text-xs font-mono px-3 py-1.5 rounded transition-colors"
-            title="Load Pre-Configured Sample Target"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Load Demo Target</span>
-          </button>
-
-          {/* Mode Switcher */}
-          <div className="flex items-center bg-cyber-950 p-1 rounded border border-cyber-border text-xs font-mono">
-            <button
-              onClick={() => onToggleWorkbenchMode('GUIDED')}
-              className={`px-3 py-1 rounded transition-colors flex items-center space-x-1.5 ${
-                workbenchMode === 'GUIDED' 
-                  ? 'bg-cyber-cyan text-cyber-950 font-bold shadow-sm' 
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Lifecycle Guide</span>
-            </button>
-            <button
-              onClick={() => onToggleWorkbenchMode('STUDIO')}
-              className={`px-3 py-1 rounded transition-colors flex items-center space-x-1.5 ${
-                workbenchMode === 'STUDIO' 
-                  ? 'bg-cyber-cyan text-cyber-950 font-bold shadow-sm' 
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Analyst Studio</span>
-            </button>
-          </div>
 
           {/* New Ingestion Button */}
           <button
             onClick={onOpenQuickIntake}
-            className="flex items-center space-x-1.5 bg-cyber-cyan hover:bg-cyan-400 text-cyber-950 font-bold text-xs font-mono px-3.5 py-1.5 rounded transition-all shadow-md shadow-cyan-950/40"
+            className="flex items-center space-x-1.5 bg-cyber-cyan hover:bg-cyan-400 text-cyber-950 font-bold text-xs font-mono px-3.5 py-1.5 rounded-lg transition-all shadow-md shadow-cyan-950/40"
           >
             <Terminal className="w-3.5 h-3.5" />
-            <span>+ Ingest Indicator</span>
+            <span>+ Ingest</span>
           </button>
         </div>
       </div>
 
-      {/* Six-Stage Collection Lifecycle Stepper (From Candy's Essential OSINT Guide) */}
-      <div className="bg-cyber-950/90 px-4 sm:px-6 py-2 overflow-x-auto flex items-center justify-between border-t border-cyber-border/40 text-xs font-mono">
-        <div className="flex items-center space-x-1 min-w-max">
-          <span className="text-[10px] uppercase tracking-wider text-slate-500 mr-2 font-bold flex items-center space-x-1">
-            <span>6-Stage Lifecycle:</span>
-          </span>
-
-          {stages.map((stg, idx) => {
-            const isActive = activeStage === stg.id;
-            const isCompleted = activeStage > stg.id;
-            return (
-              <React.Fragment key={stg.id}>
-                <button
-                  onClick={() => onSelectStage(stg.id)}
-                  className={`px-3 py-1 rounded-md transition-all flex items-center space-x-1.5 ${
-                    isActive
-                      ? 'bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan font-bold shadow-sm'
-                      : isCompleted
-                      ? 'bg-cyber-900 border border-emerald-500/40 text-emerald-400 hover:bg-cyber-850'
-                      : 'text-slate-500 hover:text-slate-300 hover:bg-cyber-900'
-                  }`}
-                >
-                  <span className={`w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold ${
-                    isActive ? 'bg-cyber-cyan text-cyber-950' : isCompleted ? 'bg-emerald-500 text-cyber-950' : 'bg-cyber-850 text-slate-400'
-                  }`}>
-                    {isCompleted ? '✓' : stg.id}
-                  </span>
-                  <span>{stg.name}</span>
-                </button>
-                {idx < stages.length - 1 && (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-700" />
-                )}
-              </React.Fragment>
-            );
-          })}
+      {/* Defensive OSINT Guarantee Bar */}
+      <div className="bg-cyber-950/95 px-6 py-1.5 flex items-center justify-between border-t border-cyber-border/40 text-[11px] font-mono">
+        <div className="flex items-center space-x-2 text-slate-400">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>CURRICULUM INVARIANT: 100% PASSIVE PUBLIC OSINT • NATO STANAG 2022 ADMIRALTY COMPLIANCE</span>
         </div>
-
-        {/* Operational Guardrail Status */}
-        <div className="hidden lg:flex items-center space-x-2 text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-0.5 rounded">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>100% PASSIVE RECON // ZERO PRIVATE CITIZEN DOXING</span>
+        <div className="text-slate-500 hidden md:block">
+          Target Scopes: Fortune 500 / Public Registries / RFC Standard Repositories
         </div>
       </div>
     </header>
