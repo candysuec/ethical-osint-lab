@@ -78,16 +78,16 @@ The hallmark of a professional analyst is knowing where legal research ends and 
 | :---: | :--- | :--- |
 | **01** | [Lab Overview](./docs/01_LAB_OVERVIEW.md) | Mission, safety rules, legal boundaries, hardware/software prerequisites. |
 | **02** | [Lab Architecture](./docs/02_LAB_ARCHITECTURE.md) | Windows 11 host setup, Kali/Ubuntu VM provisioning, network isolation. |
-| **03** | Tool Installation Plan | Step-by-step setup for Maltego, SpiderFoot, Sherlock, Recon-ng, Obsidian. |
+| **03** | [Tool Installation Plan](./docs/03_TOOL_INSTALLATION_PLAN.md) | Step-by-step setup for Maltego, SpiderFoot, Sherlock, Recon-ng, Obsidian. |
 | **04** | [7-Phase Investigation Workflow](./docs/04_7_PHASE_WORKFLOW.md) | Scope $\rightarrow$ Collect $\rightarrow$ Sanitize $\rightarrow$ Validate $\rightarrow$ Correlate $\rightarrow$ Report $\rightarrow$ Review. |
-| **05** | Safe Investigation Targets | 25 vetted legal targets (SEC EDGAR, open-source codebases, historical CTFs). |
-| **06** | 30 Graded Case Files | 10 Beginner, 10 Intermediate, and 10 Advanced real-world investigative scenarios. |
-| **07** | [Evidence Management](./templates/EVIDENCE_LOG_TEMPLATE.md) | Chain of custody logging, cryptographic SHA-256 hashing, and screenshot standards. |
-| **08** | [Report Writing](./templates/EXECUTIVE_REPORT_TEMPLATE.md) | Executive 1-pagers, Technical Intelligence Annexes, and risk scoring. |
-| **09** | 6-Month Career Roadmap | Month-by-month progression from beginner to junior threat intel/SOC analyst. |
-| **10** | AI Automation in OSINT | Human-in-the-loop workflows for log cleaning, timeline ordering, and report drafts. |
-| **11** | Scoring & Competency | Admiralty 6x6 Confidence Matrix and skill mastery tracking dashboards. |
-| **12** | Capstone Investigation | Full-scale simulated corporate digital footprint audit and board presentation. |
+| **05** | [Safe Investigation Targets](./docs/05_SAFE_INVESTIGATION_TARGETS.md) | 25 vetted legal targets (SEC EDGAR, open-source codebases, historical CTFs). |
+| **06** | [30 Graded Case Files](./cases/README.md) | 10 Beginner, 10 Intermediate, and 10 Advanced real-world investigative scenarios. |
+| **07** | [Evidence Management & Chain of Custody](./templates/EVIDENCE_LOG_TEMPLATE.md) | Master log, SHA-256 hashing, and [Screenshot Standards](./templates/SCREENSHOT_HANDOFF_TEMPLATE.md). |
+| **08** | [Report Writing & Deliverables](./templates/FINAL_INTELLIGENCE_REPORT_TEMPLATE.md) | Executive Briefings, [Source Validation Rubric](./templates/SOURCE_VALIDATION_RUBRIC.md), and SOC handoffs. |
+| **09** | [6-Month Career Roadmap](./docs/09_CAREER_DEVELOPMENT_ROADMAP.md) | Month-by-month progression from beginner to junior threat intel/SOC analyst. |
+| **10** | [AI Automation in OSINT](./docs/10_AI_AUTOMATION_GUIDE.md) | Human-in-the-loop workflows for log cleaning, timeline ordering, and report drafts. |
+| **11** | [Scoring & Competency Dashboard](./docs/11_SCORING_AND_COMPETENCY_DASHBOARD.md) | Admiralty 6x6 matrix, mastery tiers, and verifiable career portfolio badges. |
+| **12** | [Capstone Investigation](./docs/12_CAPSTONE_INVESTIGATION.md) | Enterprise Cyber Attack Surface Audit & Board Presentation (Operation Horizon Shield). |
 
 ---
 
