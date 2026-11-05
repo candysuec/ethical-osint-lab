@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Service 1: SpiderFoot Web UI (Automated OSINT Reconnaissance)
+  spiderfoot:
+    image: smicallef/spiderfoot:latest
+    container_name: osint_spiderfoot
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    volumes:
+      - spiderfoot_data:/var/lib/spiderfoot
+    environment:
+      - SPIDERFOOT_DATA=/var/lib/spiderfoot
+
+  # Service 2: Interactive CLI OSINT Workstation
+  osint-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: osint_cli_workstation
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+
+volumes:
+  spiderfoot_data:

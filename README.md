@@ -39,6 +39,29 @@ Designed to run locally on a single Windows 11 computer with virtualized researc
 
 ---
 
+## ⚡ Quickstart: Launch with Docker in 60 Seconds
+
+For users who want immediate access without configuring a hypervisor or downloading 10GB virtual machine images, a full **Docker Compose** environment is included:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/candysuec/ethical-osint-lab.git
+cd ethical-osint-lab
+
+# 2. Spin up SpiderFoot and the CLI Workstation
+docker compose up -d
+
+# 3. Access SpiderFoot Web UI in your browser:
+# http://localhost:5001
+
+# 4. Jump into the interactive OSINT CLI terminal:
+docker exec -it osint_cli_workstation bash
+```
+
+Once inside the container, `sherlock`, `dig`, `whois`, `curl`, and `jq` are immediately ready. Your local `./cases` directory is mounted live at `/workspace/cases` for real-time evidence capture.
+
+---
+
 ## ⚖️ Ethical & Legal Boundaries: The Bright Red Line
 
 The hallmark of a professional analyst is knowing where legal research ends and unlawful intrusion begins:
