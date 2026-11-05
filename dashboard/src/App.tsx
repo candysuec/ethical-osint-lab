@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
 import { InvestigationConsoleView } from './components/InvestigationConsoleView';
@@ -27,33 +27,67 @@ import {
 
 import { missionsData, Mission } from './data/missionsData';
 import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './types';
+import { loadStoredData, saveStoredData } from './utils/storage';
 
 export const App: React.FC = () => {
   // Active Navigation View - Defaults to the unified 'INVESTIGATION' console!
   const [activeView, setActiveView] = useState<SubsystemView>('INVESTIGATION');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Active Curriculum Case (Defaults to Case 02: Fastly Mail Spoofing Audit)
-  const [selectedCurriculumCase, setSelectedCurriculumCase] = useState<Mission>(missionsData[1]);
-  const [completedCaseIds, setCompletedCaseIds] = useState<string[]>(['mission-01']);
+  const [selectedCurriculumCase, setSelectedCurriculumCase] = useState<Mission>(() => {
+    const savedId = loadStoredData<string>('active_case_id', missionsData[1].id);
+    return missionsData.find(m => m.id === savedId) || missionsData[1];
+  });
+
+  const [completedCaseIds, setCompletedCaseIds] = useState<string[]>(() => {
+    return loadStoredData<string[]>('completed_case_ids', ['mission-01']);
+  });
+
   const [showCaseBrowser, setShowCaseBrowser] = useState<boolean>(false);
 
-  // Core Data State
-  const [cases, setCases] = useState<Case[]>(initialCases);
-  const [currentCase, setCurrentCase] = useState<Case>(initialCases[0]);
-  const [leads, setLeads] = useState<Lead[]>(initialLeads);
-  const [entities, setEntities] = useState<Entity[]>(initialEntities);
+  // Core Data State with Local Storage Persistence
+  const [cases, setCases] = useState<Case[]>(() => loadStoredData<Case[]>('cases', initialCases));
+  const [currentCase, setCurrentCase] = useState<Case>(cases[0] || initialCases[0]);
+  const [leads, setLeads] = useState<Lead[]>(() => loadStoredData<Lead[]>('leads', initialLeads));
+  const [entities, setEntities] = useState<Entity[]>(() => loadStoredData<Entity[]>('entities', initialEntities));
   const [relationships] = useState(initialRelationships);
-  const [evidence, setEvidence] = useState<EvidenceItem[]>(initialEvidence);
+  const [evidence, setEvidence] = useState<EvidenceItem[]>(() => loadStoredData<EvidenceItem[]>('evidence', initialEvidence));
   const [sources] = useState(initialSources);
   const [timeline] = useState(initialTimeline);
-  const [notes, setNotes] = useState<AnalystNote[]>(initialNotes);
+  const [notes, setNotes] = useState<AnalystNote[]>(() => loadStoredData<AnalystNote[]>('notes', initialNotes));
   const [auditLogs, setAuditLogs] = useState(initialAuditLogs);
-  const [gaps, setGaps] = useState<GapAnalysis[]>(initialGaps);
+  const [gaps, setGaps] = useState<GapAnalysis[]>(() => loadStoredData<GapAnalysis[]>('gaps', initialGaps));
   const [report] = useState(initialReport);
 
   // Modals
   const [showQuickIntakeModal, setShowQuickIntakeModal] = useState<boolean>(false);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
+
+  // Automatically persist state changes to localStorage
+  useEffect(() => {
+    saveStoredData('active_case_id', selectedCurriculumCase.id);
+  }, [selectedCurriculumCase]);
+
+  useEffect(() => {
+    saveStoredData('completed_case_ids', completedCaseIds);
+  }, [completedCaseIds]);
+
+  useEffect(() => {
+    saveStoredData('evidence', evidence);
+  }, [evidence]);
+
+  useEffect(() => {
+    saveStoredData('leads', leads);
+  }, [leads]);
+
+  useEffect(() => {
+    saveStoredData('notes', notes);
+  }, [notes]);
+
+  useEffect(() => {
+    saveStoredData('gaps', gaps);
+  }, [gaps]);
 
   // Handlers
   const handleSaveEvidenceFromConsole = (newEv: EvidenceItem) => {
@@ -165,11 +199,13 @@ export const App: React.FC = () => {
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
         onOpenGuide={() => setShowGuideModal(true)}
         completedCount={completedCaseIds.length}
+        isMobileMenuOpen={isMobileMenuOpen}
+        onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
 
-      {/* 2. Permanent Layout Frame: Always-Visible Sidebar + Main Subsystem */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Permanent Unified Sidebar */}
+      {/* 2. Permanent Layout Frame: Always-Visible Sidebar (or Drawer on Mobile) + Main Subsystem */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Unified Sidebar with Mobile Drawer support */}
         <Sidebar
           activeView={activeView}
           onSelectView={setActiveView}
@@ -180,10 +216,15 @@ export const App: React.FC = () => {
             evidence: evidence.length,
             gaps: gaps.filter(g => !g.isResolved).length
           }}
+          isMobileOpen={isMobileMenuOpen}
+          onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
         {/* Dynamic Subsystem Workspace with Identical Visual Framing */}
-        <main className="flex-1 overflow-hidden bg-cyber-950 relative flex flex-col">
+        <main 
+          role="main"
+          className="flex-1 overflow-hidden bg-cyber-950 relative flex flex-col min-w-0"
+        >
           {activeView === 'INVESTIGATION' && (
             <InvestigationConsoleView
               currentCase={selectedCurriculumCase}
@@ -315,8 +356,10 @@ export const App: React.FC = () => {
         <div className="fixed inset-0 bg-cyber-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-cyber-900 border border-cyber-cyan rounded-xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
+              type="button"
               onClick={() => setShowQuickIntakeModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-white font-mono text-sm"
+              aria-label="Close intake dialog"
+              className="absolute top-4 right-4 text-slate-400 hover:text-white font-mono text-sm p-1 rounded hover:bg-cyber-800"
             >
               ✕ CLOSE
             </button>

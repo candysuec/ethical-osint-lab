@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, Download, Copy, CheckCircle, ShieldCheck, Terminal, AlertCircle } from 'lucide-react';
+import { FileText, Download, Copy, CheckCircle, ShieldCheck, Terminal, AlertCircle, Printer } from 'lucide-react';
 import { IntelligenceReport, Case } from '../types';
 
 interface ReportGeneratorProps {
@@ -62,9 +62,13 @@ I certify that all evidence was acquired strictly through passive, legal open-so
     URL.revokeObjectURL(url);
   };
 
+  const handlePrintPdf = () => {
+    window.print();
+  };
+
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full max-w-5xl mx-auto">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyber-border pb-4">
+    <div className="p-4 sm:p-6 space-y-6 overflow-y-auto h-full max-w-5xl mx-auto print:p-0 print:max-w-none">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cyber-border pb-4 print:hidden">
         <div>
           <h1 className="text-xl font-bold font-mono text-slate-100 flex items-center space-x-2">
             <FileText className="w-5 h-5 text-cyber-cyan" />
@@ -75,21 +79,35 @@ I certify that all evidence was acquired strictly through passive, legal open-so
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2.5 flex-wrap">
           <button
-            onClick={handleCopy}
-            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 text-slate-200 border border-cyber-border px-3 py-1.5 rounded text-xs font-mono transition-colors"
+            type="button"
+            onClick={handlePrintPdf}
+            aria-label="Print or save report as PDF"
+            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 text-slate-200 border border-cyber-border px-3 py-1.5 rounded-lg text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
           >
-            {copied ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span>{copied ? 'COPIED TO CLIPBOARD' : 'COPY MARKDOWN'}</span>
+            <Printer className="w-3.5 h-3.5 text-cyan-400" />
+            <span>PRINT / SAVE PDF</span>
           </button>
 
           <button
+            type="button"
+            onClick={handleCopy}
+            aria-label="Copy markdown report to clipboard"
+            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 text-slate-200 border border-cyber-border px-3 py-1.5 rounded-lg text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+          >
+            {copied ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copied ? 'COPIED' : 'COPY .MD'}</span>
+          </button>
+
+          <button
+            type="button"
             onClick={handleDownload}
-            className="flex items-center space-x-1.5 bg-cyber-cyan text-cyber-950 font-bold px-3 py-1.5 rounded text-xs font-mono hover:bg-cyan-400 transition-colors"
+            aria-label="Export report dossier as markdown file"
+            className="flex items-center space-x-1.5 bg-cyber-cyan text-cyber-950 font-bold px-3 py-1.5 rounded-lg text-xs font-mono hover:bg-cyan-400 transition-colors shadow-sm focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>EXPORT .MD DOSSIER</span>
+            <span>EXPORT DOSSIER</span>
           </button>
         </div>
       </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { 
   FolderKanban, Inbox, GitMerge, Network, FileCheck,
   History, FileText, Activity, StickyNote, 
-  Sparkles, AlertOctagon, Terminal, Shield, Wrench
+  Sparkles, AlertOctagon, Terminal, Shield, Wrench, X
 } from 'lucide-react';
 
 export type SubsystemView = 
@@ -31,9 +31,17 @@ interface SidebarProps {
     evidence: number;
     gaps: number;
   };
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeView, onSelectView, counts }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ 
+  activeView, 
+  onSelectView, 
+  counts,
+  isMobileOpen = false,
+  onCloseMobile
+}) => {
   const sections = [
     {
       category: 'INVESTIGATION WORKFLOW',
@@ -132,8 +140,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onSelectView, coun
     }
   ];
 
-  return (
-    <aside className="w-64 border-r border-cyber-border bg-cyber-900/95 flex flex-col justify-between select-none shrink-0">
+  const sidebarContent = (
+    <div className="flex flex-col h-full justify-between bg-cyber-900 border-r border-cyber-border select-none w-64">
+      {/* Mobile Header Bar */}
+      <div className="lg:hidden p-4 border-b border-cyber-border flex items-center justify-between">
+        <span className="font-mono text-xs font-bold text-cyber-cyan uppercase tracking-wider">Navigation Menu</span>
+        <button
+          type="button"
+          onClick={onCloseMobile}
+          aria-label="Close navigation drawer"
+          className="p-1 rounded text-slate-400 hover:text-white hover:bg-cyber-800 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
       <div className="py-4 overflow-y-auto flex-1">
         {sections.map((section, idx) => (
           <div key={idx} className="mb-5">
@@ -147,8 +168,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onSelectView, coun
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onSelectView(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-colors ${
+                    type="button"
+                    onClick={() => {
+                      onSelectView(item.id);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none ${
                       isActive 
                         ? 'bg-cyber-cyan/15 text-cyber-cyan border-l-2 border-cyber-cyan font-semibold' 
                         : 'text-slate-400 hover:text-slate-200 hover:bg-cyber-850'
@@ -180,12 +206,47 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onSelectView, coun
 
       {/* Footer Info */}
       <div className="p-3 border-t border-cyber-border bg-cyber-950/60 text-[10px] font-mono text-slate-500 flex items-center justify-between">
-        <span className="flex items-center space-x-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span className="flex items-center space-x-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>100% Passive OSINT</span>
         </span>
         <span>v1.5.0</span>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Permanent Docked Sidebar */}
+      <aside 
+        role="navigation"
+        aria-label="Sidebar Navigation"
+        className="hidden lg:flex w-64 shrink-0 h-full"
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile / Tablet Off-Canvas Drawer */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 z-50 lg:hidden flex"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation drawer"
+        >
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" 
+            onClick={onCloseMobile}
+            aria-hidden="true"
+          />
+
+          {/* Slide-out Panel */}
+          <div className="relative flex-1 flex flex-col max-w-xs w-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

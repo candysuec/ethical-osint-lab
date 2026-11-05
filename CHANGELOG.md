@@ -5,6 +5,27 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.6.0] - 2026-11-05 (Expert Review Board Remediation & Commercial Release Hardening)
+
+### Added
+- **Session State Persistence (`storage.ts`):**
+  - Integrated zero-dependency `localStorage` state synchronization across evidence items, completed cases, leads, notes, and gap analyses.
+  - User progress and cryptographic evidence logs now persist indefinitely across browser reloads, tab closures, and system restarts.
+- **Dynamic Web Crypto SHA-256 Hashing (`crypto.ts`):**
+  - Integrated dynamic ISO/IEC 27037 compliant checksum generation via `crypto.subtle.digest('SHA-256')`.
+  - Checksums are calculated directly from active stdout response text rather than static mock hashes.
+- **Fluid Mobile/Tablet Responsive Support (`Header.tsx` & `Sidebar.tsx`):**
+  - Implemented an off-canvas slide-out navigation drawer with backdrop overlay triggered by an accessible mobile hamburger button on viewports $< 1024\text{px}$.
+  - Added a mobile/tablet 3-pillar segmented tab bar in `InvestigationConsoleView.tsx` (`1. Scope & PIRs` | `2. Tool Query` | `3. Chain of Custody`), eliminating vertical layout squishing and endless scrolling.
+- **WCAG 2.2 Level AA Accessibility Enhancements:**
+  - Added `aria-live="polite"` and `aria-atomic="true"` regions to the terminal stdout console so screen readers announce incoming intelligence telemetry.
+  - Implemented visible focus indicators (`focus-visible:ring-2 focus-visible:ring-cyber-cyan`) across all interactive buttons, dialog close triggers, and form elements.
+  - Enforced native `<button type="button">` semantics and minimum touch-target boundaries.
+- **Single-Click Executive PDF / Print Export (`ReportGeneratorView.tsx`):**
+  - Added print-optimized styling (`print:p-0`, `print:hidden`) and a **"PRINT / SAVE PDF"** action for instant executive dossier generation.
+
+---
+
 ## [1.5.0] - 2026-11-05 (Mission Control Learning Mode & 30 Guided Cases)
 
 ### Added
