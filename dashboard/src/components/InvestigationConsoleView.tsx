@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Play, Terminal, CheckCircle2, Shield, AlertTriangle, 
   FileText, Copy, Check, RefreshCw, 
   Sparkles, FolderOpen, ArrowRight, ShieldCheck,
-  Hash, Database, Layers
+  Hash, Database, Download, Command
 } from 'lucide-react';
 import { Mission } from '../data/missionsData';
 import { EvidenceItem } from '../types';
@@ -31,6 +31,10 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
   const [evidenceSaved, setEvidenceSaved] = useState(isCaseCompleted);
   const [calculatedHash, setCalculatedHash] = useState<string>('');
   
+  // Interactive Two-Source Corroboration State
+  const [source1Verified, setSource1Verified] = useState<boolean>(true);
+  const [source2Verified, setSource2Verified] = useState<boolean>(false);
+  
   // Mobile / Tablet Tab State for Pillar Navigation (< 1024px)
   const [mobilePillarTab, setMobilePillarTab] = useState<'SCOPE' | 'TOOL' | 'PROOF'>('TOOL');
 
@@ -43,17 +47,19 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
       if (isMounted) setCalculatedHash(hash);
     });
     setEvidenceSaved(isCaseCompleted);
+    setSource2Verified(isCaseCompleted);
     return () => { isMounted = false; };
   }, [currentCase, activeStep.output, isCaseCompleted]);
 
-  const handleRunQuery = async () => {
+  const handleRunQuery = useCallback(async () => {
     setIsRunningQuery(true);
     setTimeout(async () => {
       const freshHash = await calculateSha256(activeStep.output);
       setCalculatedHash(freshHash);
       setIsRunningQuery(false);
+      setSource1Verified(true);
     }, 350);
-  };
+  }, [activeStep.output]);
 
   const handleCopyHash = () => {
     navigator.clipboard.writeText(calculatedHash);
@@ -61,7 +67,7 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
     setTimeout(() => setCopiedHash(false), 2000);
   };
 
-  const handleCommitEvidence = () => {
+  const handleCommitEvidence = useCallback(() => {
     const newEvidence: EvidenceItem = {
       id: `ev-${Date.now()}`,
       caseId: currentCase.id,
@@ -72,13 +78,64 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
       filePath: `cases/evidence/${currentCase.id}_proof.txt`,
       captureTimestamp: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
       admiraltyReliability: 'A',
-      admiraltyCredibility: '1',
+      admiraltyCredibility: source2Verified ? '1' : '2',
       fullViewportVerified: true,
       verifiedBy: 'Lead_Investigator'
     };
     onSaveEvidence(newEvidence);
     setEvidenceSaved(true);
+  }, [currentCase, calculatedHash, source2Verified, onSaveEvidence]);
+
+  // Exportable Forensic Package Download (JSON Dossier + SHA256)
+  const handleExportForensicPackage = () => {
+    const forensicPackage = {
+      manifest_standard: 'ISO/IEC 27037:2012',
+      case_reference: currentCase.caseNumber,
+      case_title: currentCase.title,
+      target_entity: currentCase.target,
+      capture_timestamp_utc: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
+      investigator: 'Lead_Investigator_Chevalier',
+      priority_intelligence_requirement: currentCase.oneSentenceObjective,
+      command_executed: activeStep.command,
+      stdout_telemetry: activeStep.output,
+      cryptographic_sha256_checksum: calculatedHash,
+      two_source_corroboration: {
+        source_1: { name: 'Authoritative Root DNS Zone', verified: source1Verified },
+        source_2: { name: 'RFC 7489 Secondary Registry', verified: source2Verified },
+        status: source2Verified ? 'CORROBORATED_FACT' : 'UNVERIFIED_SINGLE_SOURCE'
+      },
+      admiralty_confidence_rating: source2Verified ? 'A1 (Completely Reliable / Confirmed)' : 'A2 (Reliable / Probably True)',
+      defensive_remediation: activeStep.remediation || 'Audit and lock external perimeter'
+    };
+
+    const blob = new Blob([JSON.stringify(forensicPackage, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentCase.caseNumber}_FORENSIC_PACKAGE.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
+
+  // Global Keyboard Shortcuts (Ctrl+Enter = Run Query, Ctrl+S = Commit Evidence, Ctrl+K = Case Browser)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+      if (isCmdOrCtrl && e.key === 'Enter') {
+        e.preventDefault();
+        handleRunQuery();
+      } else if (isCmdOrCtrl && e.key === 's') {
+        e.preventDefault();
+        handleCommitEvidence();
+      } else if (isCmdOrCtrl && e.key === 'k') {
+        e.preventDefault();
+        onOpenCaseBrowser();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleRunQuery, handleCommitEvidence, onOpenCaseBrowser]);
 
   return (
     <div className="flex-1 flex flex-col h-full bg-cyber-950 text-slate-200 overflow-y-auto font-sans p-3 sm:p-6 space-y-4 sm:space-y-5">
@@ -108,16 +165,19 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
             </p>
           </div>
 
-          {/* Quick Case Switcher Pill */}
+          {/* Quick Case Switcher Pill with Shortcut Hint */}
           <div className="shrink-0 flex items-center space-x-2">
             <button
               type="button"
               onClick={onOpenCaseBrowser}
-              aria-label="Browse all 30 curriculum cases"
+              aria-label="Browse all 30 curriculum cases (Ctrl+K)"
               className="bg-cyber-800 hover:bg-cyber-750 border border-cyber-border hover:border-cyber-cyan text-white text-xs font-mono px-3.5 py-2 rounded-xl transition-all flex items-center space-x-2 shadow-sm focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
             >
               <FolderOpen className="w-4 h-4 text-cyan-400" />
-              <span>Browse All 30 Cases</span>
+              <span>Browse 30 Cases</span>
+              <span className="bg-black/40 text-[10px] text-slate-400 px-1.5 py-0.5 rounded border border-cyber-border font-mono hidden sm:inline">
+                Ctrl+K
+              </span>
             </button>
           </div>
         </div>
@@ -248,8 +308,9 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                   type="button"
                   onClick={handleRunQuery}
                   disabled={isRunningQuery}
-                  aria-label="Execute investigation query"
+                  aria-label="Execute investigation query (Ctrl+Enter)"
                   className="bg-cyber-cyan hover:bg-cyan-400 text-cyber-950 font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center space-x-1.5 shrink-0 shadow-md shadow-cyan-950/40 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+                  title="Execute query (Ctrl+Enter)"
                 >
                   {isRunningQuery ? (
                     <>
@@ -337,32 +398,65 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                 </div>
               </div>
 
-              {/* NATO STANAG Rating */}
+              {/* NATO STANAG Rating with Dynamic Elevation */}
               <div className="bg-cyber-950 border border-cyber-border rounded-lg p-3 space-y-2 text-xs font-mono">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">NATO STANAG 2022:</span>
-                  <span className="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2 py-0.5 rounded font-bold">
-                    Rating: {activeStep.admiraltyScore}
+                  <span className={`px-2 py-0.5 rounded font-bold border ${
+                    source2Verified 
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' 
+                      : 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                  }`}>
+                    Rating: {source2Verified ? 'A1 (Confirmed Fact)' : 'A2 (Uncorroborated Lead)'}
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-400 leading-snug">
                   Source Reliability: <strong>A (Completely Reliable)</strong><br />
-                  Information Credibility: <strong>1 (Confirmed by Authoritative Zone)</strong>
+                  Credibility: <strong>{source2Verified ? '1 (Two Independent Sources Corroborated)' : '2 (Single Source Only)'}</strong>
                 </div>
               </div>
 
-              {/* Two-Source Corroboration */}
-              <div className="bg-cyber-950 border border-cyber-border rounded-lg p-3 space-y-1.5 text-xs font-mono">
-                <span className="text-slate-400 text-[11px] block">Two-Source Corroboration:</span>
-                <div className="space-y-1 text-[11px]">
-                  <div className="flex items-center space-x-1.5 text-emerald-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Primary: Authoritative Root DNS Zone</span>
+              {/* Interactive Two-Source Corroboration Gate */}
+              <div className="bg-cyber-950 border border-cyber-border rounded-lg p-3 space-y-2 text-xs font-mono">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-300 font-bold text-[11px]">Two-Source Rule Verification:</span>
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
+                    source2Verified ? 'text-emerald-400 bg-emerald-950/80' : 'text-amber-400 bg-amber-950/80'
+                  }`}>
+                    {source2Verified ? '2/2 VERIFIED' : '1/2 REQUIRED'}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex items-center justify-between p-1.5 rounded bg-black/40 border border-cyber-border/40 text-emerald-400">
+                    <div className="flex items-center space-x-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Source 1: Authoritative Root DNS Zone</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-bold">PRIMARY</span>
                   </div>
-                  <div className="flex items-center space-x-1.5 text-emerald-400">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Secondary: RFC 7489 Public DMARC Registry</span>
-                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSource2Verified(!source2Verified)}
+                    className={`w-full flex items-center justify-between p-1.5 rounded border transition-all text-left ${
+                      source2Verified
+                        ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300'
+                        : 'bg-cyber-900 border-amber-500/40 text-amber-300 hover:border-amber-400'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-1.5">
+                      <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[9px] font-bold ${
+                        source2Verified ? 'bg-emerald-500 text-slate-950 border-emerald-400' : 'border-amber-400'
+                      }`}>
+                        {source2Verified ? '✓' : ''}
+                      </div>
+                      <span>Source 2: RFC 7489 Secondary Registry</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-400">
+                      {source2Verified ? 'CORROBORATED' : 'CLICK TO VERIFY'}
+                    </span>
+                  </button>
                 </div>
               </div>
 
@@ -385,12 +479,13 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                 type="button"
                 onClick={handleCommitEvidence}
                 disabled={evidenceSaved}
-                aria-label="Commit verified forensic evidence into vault"
+                aria-label="Commit verified forensic evidence into vault (Ctrl+S)"
                 className={`w-full py-2.5 px-4 rounded-lg font-mono text-xs font-bold transition-all flex items-center justify-center space-x-2 shadow-md focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none ${
                   evidenceSaved
                     ? 'bg-emerald-950/80 border border-emerald-500 text-emerald-300 cursor-default'
                     : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950'
                 }`}
+                title="Commit evidence (Ctrl+S)"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{evidenceSaved ? '✓ Logged into Sovereign Evidence Vault' : '💾 Commit Evidence to Vault'}</span>
@@ -399,22 +494,33 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
               <div className="flex items-center space-x-2">
                 <button
                   type="button"
+                  onClick={handleExportForensicPackage}
+                  aria-label="Export complete forensic evidence package JSON"
+                  className="bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-slate-300 hover:text-white text-xs font-mono py-2 px-3 rounded-lg transition-colors flex items-center justify-center space-x-1 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+                  title="Export ISO/IEC 27037 Forensic Package JSON"
+                >
+                  <Download className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Dossier JSON</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={onOpenReport}
                   aria-label="View generated case report"
-                  className="flex-1 bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-slate-300 text-xs font-mono py-2 rounded-lg transition-colors flex items-center justify-center space-x-1 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+                  className="flex-1 bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-slate-300 hover:text-white text-xs font-mono py-2 rounded-lg transition-colors flex items-center justify-center space-x-1 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
                 >
                   <FileText className="w-3.5 h-3.5 text-slate-400" />
-                  <span>View Full Report</span>
+                  <span>View Report</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={onNextCase}
                   aria-label="Advance to next curriculum case"
-                  className="bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-cyan-400 text-xs font-mono px-3.5 py-2 rounded-lg transition-colors flex items-center space-x-1 shrink-0 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
+                  className="bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-cyan-400 text-xs font-mono px-3 py-2 rounded-lg transition-colors flex items-center space-x-1 shrink-0 focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none"
                   title="Advance to next case"
                 >
-                  <span>Next Case</span>
+                  <span>Next</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>

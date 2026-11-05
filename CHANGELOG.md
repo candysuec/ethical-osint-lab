@@ -5,6 +5,21 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.7.0] - 2026-11-05 (Interactive Two-Source Gate, Hotkeys & Forensic Dossier Export)
+
+### Added
+- **Interactive Two-Source Corroboration Gate (`InvestigationConsoleView.tsx`):**
+  - Enforces the pedagogical "Two-Source Rule" defined in `templates/SOURCE_VALIDATION_RUBRIC.md`.
+  - Dynamically elevates the NATO STANAG 2022 rating from `A2 (Uncorroborated Lead)` to `A1 (Confirmed Fact)` only when the secondary corroboration source (e.g. RFC 7489 Secondary Registry) is verified.
+- **Global Keyboard Shortcut Engine:**
+  - `Ctrl+Enter` / `Cmd+Enter`: Instant query execution.
+  - `Ctrl+S` / `Cmd+S`: Commit verified evidence directly into the sovereign vault.
+  - `Ctrl+K` / `Cmd+K`: Instant curriculum case browser modal launcher.
+- **One-Click Forensic Dossier Export (`.json`):**
+  - Generates and downloads a complete ISO/IEC 27037:2012 compliant digital evidence package containing case metadata, exact query commands, stdout telemetry, dynamic SHA-256 checksums, two-source corroboration status, and defensive remediation plans.
+
+---
+
 ## [1.6.0] - 2026-11-05 (Expert Review Board Remediation & Commercial Release Hardening)
 
 ### Added
