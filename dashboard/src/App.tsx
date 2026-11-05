@@ -17,6 +17,8 @@ import { AuditLogsView } from './components/AuditLogsView';
 import { AnalystNotesView } from './components/AnalystNotesView';
 import { AIAssistantView } from './components/AIAssistantView';
 import { GapAnalysisView } from './components/GapAnalysisView';
+import { CapstoneInvestigationView } from './components/CapstoneInvestigationView';
+import { ExifDropzoneView } from './components/ExifDropzoneView';
 
 import { 
   initialCases, initialEntities, initialRelationships, 
@@ -236,11 +238,25 @@ export const App: React.FC = () => {
             />
           )}
 
+          {activeView === 'CAPSTONE' && (
+            <CapstoneInvestigationView
+              onOpenReport={() => setActiveView('REPORT')}
+            />
+          )}
+
           {activeView === 'TOOLS' && (
             <ToolWorkbenchView
               currentCase={currentCase}
               onAddEvidence={handleAddEvidence}
               onAddEntity={handleAddEntity}
+              onAddLead={handleAddLead}
+            />
+          )}
+
+          {activeView === 'EXIF_INSPECTOR' && (
+            <ExifDropzoneView
+              currentCaseId={currentCase.id}
+              onAddEvidence={handleAddEvidence}
               onAddLead={handleAddLead}
             />
           )}
@@ -281,6 +297,7 @@ export const App: React.FC = () => {
             <RelationshipGraphView
               entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
               relationships={relationships}
+              onAddEntity={handleAddEntity}
             />
           )}
 

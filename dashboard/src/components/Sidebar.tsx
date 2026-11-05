@@ -2,12 +2,14 @@ import React from 'react';
 import { 
   FolderKanban, Inbox, GitMerge, Network, FileCheck,
   History, FileText, Activity, StickyNote, 
-  Sparkles, AlertOctagon, Terminal, Shield, Wrench, X
+  Sparkles, AlertOctagon, Terminal, Shield, Wrench, X, Award, FileSearch
 } from 'lucide-react';
 
 export type SubsystemView = 
   | 'INVESTIGATION' // The unified case investigation console
+  | 'CAPSTONE'      // Operation Horizon Shield Pre-IPO Audit Capstone
   | 'TOOLS'         // The tool sandbox
+  | 'EXIF_INSPECTOR'// Drag & drop client-side EXIF & document analyzer
   | 'CASES'         // Multi-case portfolio manager
   | 'INTAKE'        // Ingest new indicator
   | 'LEADS'         // Lead queue
@@ -54,9 +56,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
           badgeColor: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
         },
         { 
+          id: 'CAPSTONE' as SubsystemView, 
+          label: 'Operation Horizon Shield', 
+          icon: Award, 
+          badge: 'Tier 4',
+          badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+        },
+        { 
           id: 'TOOLS' as SubsystemView, 
           label: 'Tool Sandbox', 
           icon: Wrench 
+        },
+        { 
+          id: 'EXIF_INSPECTOR' as SubsystemView, 
+          label: 'EXIF & Doc Ingestion', 
+          icon: FileSearch, 
+          badge: 'Sandbox',
+          badgeColor: 'bg-emerald-500/20 text-emerald-300'
         },
         { 
           id: 'CASES' as SubsystemView, 

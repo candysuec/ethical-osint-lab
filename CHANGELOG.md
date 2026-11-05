@@ -5,6 +5,44 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.0.0] - 2026-11-05 (Capstone Operation Horizon Shield, Maltego Graph Transforms & Client-Side EXIF Dropzone)
+
+### Added
+- **Capstone Investigation: Operation Horizon Shield (`CapstoneInvestigationView.tsx`, `capstoneData.ts`):**
+  - Fully implemented the culminating Pre-IPO Attack Surface & Executive Risk Audit against target entity `Aether Dynamics Global Corporation` (`aetherdynamics-global.com`).
+  - Covers all 6 operational intelligence phases:
+    1. Phase 1: DNS & Perimeter Exposure (SPF softfail & DMARC `p=none` spoofing hazards).
+    2. Phase 2: Certificate Transparency & Dangling Cloud Infrastructure (`stage.aetherdynamics-global.com` S3 takeover vector).
+    3. Phase 3: Brand Defense & Typo/Combosquatting Permutations (`aetherdynamic-login.com` Cobalt Strike C2).
+    4. Phase 4: Autonomous System & BGP Routing Resilience (AS54113 transit multi-homing audit).
+    5. Phase 5: Client-Side EXIF Metadata & Geolocation Extraction (`horizon_board_retreat_2026.jpg` executive GPS leak).
+    6. Phase 6: Corporate Registration & Beneficial Ownership Resolution (Delaware entity link resolution).
+  - Live cryptographic SHA-256 evidence hashing for every completed task.
+  - Interactive "Print Official Certificate" rendering the Tier 4 Principal Strategist Diploma with NIST NICE SP-ARC-001 alignment.
+  - One-click ISO/IEC 27037 compliant `OPERATION_HORIZON_SHIELD_CAPSTONE_DOSSIER.json` export.
+- **Interactive Relationship Graph Transforms (`RelationshipGraphView.tsx`):**
+  - Maltego-style interactive graph pivots:
+    - `Pivot DNS`: Extracts and links authoritative nameservers (`ns1.*`).
+    - `Pivot WHOIS`: Correlates administrative contact and privacy-shielded registrar entities.
+    - `Pivot ASN`: Maps upstream autonomous system and border gateway routing.
+    - `Pivot Officer`: Discovers corporate beneficial officers and registered agents.
+  - Dynamic graph node generation, real-time edge wiring, property bucket filtering, and live entity resolution synchronization.
+- **Client-Side EXIF & Document Ingestion Dropzone (`ExifDropzoneView.tsx`):**
+  - Multi-modal drag-and-drop ingestion engine for photographs (JPEG, PNG, TIFF) and documents (PDF, DOCX).
+  - 100% client-side privacy: zero bytes leave the browser.
+  - Web Crypto SHA-256 digital fingerprinting compliant with ISO/IEC 27037.
+  - Automated OPSEC threat detector: highlights embedded GPS latitude/longitude, hardware serials, internal Active Directory usernames (`EVANCE-RESTONG-VA`), and internal corporate local filepaths.
+  - Integrated OpenStreetMap satellite lock for geolocated media artifacts.
+  - One-click "Commit to Evidence Vault" elevating artifacts directly to $A1$ Verified status.
+  - One-click "Scrub & Export (OPSEC)" to download sanitized, metadata-stripped copies.
+- **Universal Navigation & View Integration (`App.tsx`, `Sidebar.tsx`):**
+  - Added dedicated navigation entries in `Sidebar.tsx`:
+    - `Operation Horizon Shield` (Tier 4 badge) under `INVESTIGATION WORKFLOW`.
+    - `EXIF & Doc Ingestion` (Sandbox badge) under `INVESTIGATION WORKFLOW`.
+  - Added polling watch support (`usePolling: true`) in `vite.config.ts` for rock-solid cross-platform file change detection on mapped drives.
+
+---
+
 ## [1.9.0] - 2026-11-05 (Student & Instructor Operational Field Manual)
 
 ### Added
