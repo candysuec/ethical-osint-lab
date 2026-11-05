@@ -5,6 +5,22 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.4.1] - 2026-11-05 (Plain-English Onboarding Guide & Interactive Tour)
+
+### Added
+- **Beginner Onboarding & Plain English Guide (`BeginnerGuideModal.tsx`):**
+  - Integrated a 3-step interactive onboarding modal accessible via the glowing **"🔰 How to Use (Start Here)"** button in the header.
+  - Translates cyber-jargon into plain English real-world analogies for all 7 tools:
+    - `dig` (DNS/Mail) $\rightarrow$ "The Internet Phonebook"
+    - `crt.sh` (Certificates) $\rightarrow$ "The Public SSL Notary Logbook"
+    - `dnstwist` (Permutations) $\rightarrow$ "The Fake Look-Alike Brand Hunter"
+    - `BGPView` (Routing) $\rightarrow$ "The Internet Highway Road Map"
+    - `exiftool` (Metadata) $\rightarrow$ "The Invisible Digital Fingerprint Reader"
+    - `Wayback CDX` (Archive) $\rightarrow$ "The Internet Time Machine"
+  - Provides a 3-click interactive walkthrough guiding junior analysts from running a passive query to locking in cryptographic evidence.
+
+---
+
 ## [1.4.0] - 2026-11-05 (Interactive Tool Execution Studio & Tool-to-Evidence Bridge)
 
 ### Added

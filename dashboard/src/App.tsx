@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
 import { GuidedLifecycleView } from './components/GuidedLifecycleView';
 import { ToolWorkbenchView } from './components/ToolWorkbenchView';
+import { BeginnerGuideModal } from './components/BeginnerGuideModal';
 import { CaseManagementView } from './components/CaseManagementView';
 import { IntakeView } from './components/IntakeView';
 import { LeadQueueView } from './components/LeadQueueView';
@@ -49,6 +50,8 @@ export const App: React.FC = () => {
 
   // Quick Ingestion Modal
   const [showQuickIntakeModal, setShowQuickIntakeModal] = useState<boolean>(false);
+  // Plain English Guide Modal
+  const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
 
   // Handlers
   const handleAddLead = (newLead: Lead) => {
@@ -162,6 +165,7 @@ export const App: React.FC = () => {
           setWorkbenchMode('STUDIO');
           setActiveView('TOOLS');
         }}
+        onOpenGuide={() => setShowGuideModal(true)}
         onLoadDemo={handleLoadDemo}
       />
 
@@ -307,6 +311,16 @@ export const App: React.FC = () => {
           )}
         </main>
       </div>
+
+      {/* Plain English Guide Modal */}
+      <BeginnerGuideModal
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        onSelectToolAndRun={(_tool) => {
+          setWorkbenchMode('STUDIO');
+          setActiveView('TOOLS');
+        }}
+      />
 
       {/* Quick Intake Modal */}
       {showQuickIntakeModal && (

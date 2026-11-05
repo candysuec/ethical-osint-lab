@@ -16,6 +16,7 @@ interface HeaderProps {
   onToggleWorkbenchMode: (mode: 'GUIDED' | 'STUDIO') => void;
   onOpenQuickIntake: () => void;
   onOpenTools: () => void;
+  onOpenGuide: () => void;
   onLoadDemo: () => void;
 }
 
@@ -38,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleWorkbenchMode,
   onOpenQuickIntake,
   onOpenTools,
+  onOpenGuide,
   onLoadDemo
 }) => {
   const getTlpBadge = (tlp: TlpClassification) => {
@@ -93,6 +95,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Center / Right Controls */}
         <div className="flex items-center space-x-3">
+          {/* Beginner Onboarding Guide Button */}
+          <button
+            onClick={onOpenGuide}
+            className="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 text-xs font-mono px-3 py-1.5 rounded-lg transition-all animate-pulse"
+            title="Open Plain English Step-by-Step Guide"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+            <span className="font-bold">🔰 How to Use (Start Here)</span>
+          </button>
+
           {/* Tool Runner Studio Button */}
           <button
             onClick={onOpenTools}
