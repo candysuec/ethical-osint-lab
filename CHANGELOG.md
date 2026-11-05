@@ -8,6 +8,18 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 ## [1.2.0] - 2026-11-04 (Complete 30-Case Curriculum, Standardized Forensics & Capstone)
 
 ### Added
+- **Ethical AI-Powered OSINT Investigation Framework Specification (`docs/ETHICAL_AI_OSINT_FRAMEWORK_SPECIFICATION.md`):**
+  - Synthesized across 8 multidisciplinary expert roles (Senior OSINT Investigator, Threat Intel Analyst, Digital Forensics Examiner, Cybersecurity Architect, Data Scientist, AI Systems Architect, Privacy Attorney, Compliance Officer).
+  - Codified Section 1 (17 Input Types and passive recon methodologies).
+  - Codified Section 2 (Investigation Decision Tree, lifecycle workflows, and pseudocode).
+  - Codified Section 3 (7-Category Source Catalog with reliability scores and validation protocols).
+  - Codified Section 4 (Source Confidence Model based on NATO STANAG 2022 Admiralty 6×6 System with formulaic Confidence Index).
+  - Codified Section 5 (Entity Resolution & 4-pillar disambiguation engine).
+  - Codified Section 6 (AI Correlation Engine across 7 property buckets with edge weighting).
+  - Codified Section 7 (7-part audit-ready report generator).
+  - Codified Section 8 (Ethics Engine with 5-filter compliance gate and automated PII/residential redacting).
+  - Codified Section 9 (Training Mode simulation suite with synthetic corporations and historical CTF scenarios).
+  - Codified Section 10 (Analyst Dashboard architecture with 8 core workbench modules).
 - **Complete 30 Graded Case Files Suite (`cases/`):**
   - **Tier 1: Beginner Cases (01–10):** Corporate subsidiaries (`CASE-BEG-001`), DNS SPF/DMARC mail defense (`CASE-BEG-002`), Certificate Transparency logs (`CASE-BEG-003`), Wayback Machine historical drift (`CASE-BEG-004`), Robots.txt/sitemap taxonomy (`CASE-BEG-005`), PDF/EXIF document metadata forensics (`CASE-BEG-006`), BGP ASN/IP prefix mapping (`CASE-BEG-007`), Git commit & CI/CD footprinting (`CASE-BEG-008`), SEC DEF 14A directorship graphing (`CASE-BEG-009`), and Dangling CNAME takeover audits (`CASE-BEG-010`).
   - **Tier 2: Intermediate Cases (11–20):** Maltego entity graph pivots (`CASE-INT-011`), Pre-GDPR historical WHOIS archeology (`CASE-INT-012`), Reverse IP co-tenancy & neighbor risk (`CASE-INT-013`), OpenAPI/Swagger schema mining (`CASE-INT-014`), X.509 SKI & serial number pivots (`CASE-INT-015`), Open-source bot username correlation with false-positive filtering (`CASE-INT-016`), Cloud bucket namespace discovery (`CASE-INT-017`), PyPI/npm SBOM & OpenSSF supply chain audits (`CASE-INT-018`), Domain breach telemetry & SEC Item 1.05 disclosures (`CASE-INT-019`), and OpenStreetMap geospatial campus verification (`CASE-INT-020`).
