@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { 
   Play, Terminal, CheckCircle2, Shield, AlertTriangle, 
   FileText, Copy, Check, ExternalLink, RefreshCw, 
-  HelpCircle, Sparkles, FolderOpen, ArrowRight, ShieldCheck,
-  Clock, Hash, Database
+  Sparkles, FolderOpen, ArrowRight, ShieldCheck,
+  Hash, Database, Info, ExternalLink as LinkIcon
 } from 'lucide-react';
 import { Mission } from '../data/missionsData';
 import { EvidenceItem } from '../types';
@@ -26,7 +26,6 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
   onNextCase
 }) => {
   const [isRunningQuery, setIsRunningQuery] = useState(false);
-  const [hasRunQuery, setHasRunQuery] = useState(true); // Content immediately visible - zero empty void!
   const [copiedHash, setCopiedHash] = useState(false);
   const [evidenceSaved, setEvidenceSaved] = useState(isCaseCompleted);
 
@@ -37,7 +36,6 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
     setIsRunningQuery(true);
     setTimeout(() => {
       setIsRunningQuery(false);
-      setHasRunQuery(true);
     }, 400);
   };
 
@@ -67,154 +65,149 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-cyber-950 text-slate-200 overflow-hidden font-sans">
-      {/* Case Header Banner */}
-      <div className="bg-cyber-900 border-b border-cyber-border px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shrink-0">
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={onOpenCaseBrowser}
-            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 text-cyan-400 border border-cyber-border hover:border-cyan-500/50 px-3 py-1.5 rounded-lg text-xs font-mono transition-colors shadow-sm"
-            title="Browse all 30 curriculum cases"
-          >
-            <FolderOpen className="w-3.5 h-3.5" />
-            <span className="font-bold">Browse 30 Cases</span>
-          </button>
-
-          <span className="text-slate-700 hidden sm:inline">|</span>
-
-          <div>
+    <div className="flex-1 flex flex-col h-full bg-cyber-950 text-slate-200 overflow-y-auto font-sans p-6 space-y-5">
+      {/* Platform Orientation & Purpose Hero Banner */}
+      <div className="bg-gradient-to-r from-cyber-900 via-cyber-850 to-cyber-900 border border-cyber-border rounded-2xl p-5 shadow-lg relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-mono bg-cyan-950 text-cyan-300 border border-cyan-800 px-2 py-0.5 rounded font-bold">
-                {currentCase.caseNumber}
+              <span className="text-xs font-mono uppercase tracking-widest text-cyber-cyan font-bold">
+                DEFENSIVE CYBER INTELLIGENCE WORKBENCH
               </span>
-              <h1 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                {currentCase.title}
-              </h1>
+              <span className="text-slate-600">•</span>
+              <span className="text-xs font-mono text-emerald-400 font-semibold flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>NATO STANAG 2022 & CFAA Compliant</span>
+              </span>
             </div>
-          </div>
-        </div>
-
-        {/* Right Status Actions */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1.5 text-xs font-mono text-slate-400 bg-cyber-950 px-3 py-1.5 rounded-lg border border-cyber-border">
-            <span className="text-slate-500">Target:</span>
-            <strong className="text-emerald-400">{currentCase.target}</strong>
+            <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
+              Case Investigation Console: <span className="text-cyber-cyan">{currentCase.title}</span>
+            </h1>
+            <p className="text-xs md:text-sm text-slate-300 max-w-4xl leading-relaxed">
+              This workbench trains analysts in defensible, audit-ready digital footprint investigations. Every investigation follows a strict 3-pillar cadence: <strong>1) Ethical Scope & PIRs</strong>, <strong>2) Passive Tool Execution</strong>, and <strong>3) Cryptographic Proof & Chain of Custody</strong>.
+            </p>
           </div>
 
-          <button
-            onClick={onOpenReport}
-            className="flex items-center space-x-1.5 bg-cyber-850 hover:bg-cyber-800 text-slate-300 hover:text-white border border-cyber-border px-3 py-1.5 rounded-lg text-xs font-mono transition-colors"
-          >
-            <FileText className="w-3.5 h-3.5 text-slate-400" />
-            <span className="hidden sm:inline">Case Report</span>
-          </button>
+          {/* Quick Case Switcher Pill */}
+          <div className="shrink-0 flex items-center space-x-2">
+            <button
+              onClick={onOpenCaseBrowser}
+              className="bg-cyber-800 hover:bg-cyber-750 border border-cyber-border hover:border-cyber-cyan text-white text-xs font-mono px-3.5 py-2 rounded-xl transition-all flex items-center space-x-2 shadow-sm"
+            >
+              <FolderOpen className="w-4 h-4 text-cyan-400" />
+              <span>Browse All 30 Cases</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 3-Column Investigative Workspace: Scope (Left) | Tool & Output (Center) | Chain of Custody (Right) */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
+      {/* 3-Column Structured Investigation Workspace */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
         
-        {/* PANEL 1: Case Scope & Priority Intelligence Requirements (Left 3 Columns) */}
+        {/* ======================================================== */}
+        {/* PILLAR 1: Case Scope & Priority Intelligence Requirements */}
+        {/* ======================================================== */}
         <div className="lg:col-span-3 flex flex-col space-y-4">
-          {/* Briefing Card */}
-          <div className="bg-cyber-900 border border-cyber-border rounded-xl p-4 shadow-sm space-y-3">
-            <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
+          <div className="bg-cyber-900 border border-cyber-border rounded-xl p-4 shadow-sm space-y-3.5">
+            <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider border-b border-cyber-border/80 pb-2">
               <Shield className="w-4 h-4 text-cyan-400" />
-              <span>1. Ethical Scope & PIRs</span>
+              <span>Pillar 1: Scope & PIRs</span>
             </div>
 
             <div>
               <span className="text-[11px] font-mono text-slate-400 block mb-1">
                 Priority Intelligence Requirement (PIR):
               </span>
-              <p className="text-xs text-slate-200 leading-relaxed font-medium bg-cyber-950 p-2.5 rounded-lg border border-cyber-border/80">
+              <p className="text-xs text-slate-200 leading-relaxed font-semibold bg-cyber-950 p-2.5 rounded-lg border border-cyber-border">
                 "{currentCase.oneSentenceObjective}"
               </p>
             </div>
 
-            <div className="pt-2 border-t border-cyber-border/80 space-y-2 text-xs font-mono">
+            <div className="space-y-2 text-xs font-mono pt-1">
               <div>
-                <span className="text-slate-500 block">Category:</span>
-                <span className="text-slate-300 font-semibold">{currentCase.category}</span>
+                <span className="text-slate-500 block text-[11px]">Target Entity:</span>
+                <span className="text-emerald-400 font-bold bg-cyber-950 px-2 py-1 rounded border border-cyber-border block mt-0.5 truncate">
+                  {currentCase.target}
+                </span>
               </div>
               <div>
-                <span className="text-slate-500 block">Curriculum Tier:</span>
-                <span className={`font-semibold ${
-                  currentCase.tier === 'BEGINNER' ? 'text-emerald-400' : currentCase.tier === 'INTERMEDIATE' ? 'text-cyan-400' : 'text-purple-400'
-                }`}>
-                  {currentCase.tier}
-                </span>
+                <span className="text-slate-500 block text-[11px]">Curriculum Tier:</span>
+                <span className="text-slate-300 font-semibold">{currentCase.tier} ({currentCase.caseNumber})</span>
+              </div>
+              <div>
+                <span className="text-slate-500 block text-[11px]">Analytical Category:</span>
+                <span className="text-slate-300 font-semibold">{currentCase.category}</span>
               </div>
             </div>
           </div>
 
-          {/* Legal Guardrails Card */}
-          <div className="bg-cyber-900 border border-emerald-900/60 rounded-xl p-4 shadow-sm space-y-2">
+          {/* Ethical Red Lines Card */}
+          <div className="bg-cyber-900 border border-emerald-900/50 rounded-xl p-4 shadow-sm space-y-2">
             <div className="flex items-center space-x-1.5 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Ethical Red Lines</span>
             </div>
-            <ul className="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+            <ul className="text-xs text-slate-300 space-y-1.5 leading-relaxed font-sans">
               <li className="flex items-start space-x-1.5">
-                <span className="text-emerald-400 shrink-0 font-bold">✓</span>
+                <span className="text-emerald-400 font-bold">✓</span>
                 <span>100% Passive DNS / Public Record queries.</span>
               </li>
               <li className="flex items-start space-x-1.5">
-                <span className="text-rose-400 shrink-0 font-bold">✕</span>
+                <span className="text-rose-400 font-bold">✕</span>
                 <span>Zero active port scanning (`nmap`) or fuzzing.</span>
               </li>
               <li className="flex items-start space-x-1.5">
-                <span className="text-rose-400 shrink-0 font-bold">✕</span>
+                <span className="text-rose-400 font-bold">✕</span>
                 <span>Zero profiling of living private individuals.</span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* PANEL 2: Live Tool Execution & Raw Findings (Center 5 Columns) */}
+        {/* ======================================================== */}
+        {/* PILLAR 2: Live Passive Tool Execution & Findings         */}
+        {/* ======================================================== */}
         <div className="lg:col-span-5 flex flex-col space-y-4">
           <div className="bg-cyber-900 border border-cyber-border rounded-xl p-4 shadow-sm flex flex-col space-y-3 flex-1">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-cyber-border/80 pb-2">
               <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
                 <Terminal className="w-4 h-4 text-cyan-400" />
-                <span>2. Passive Tool Execution</span>
+                <span>Pillar 2: Tool Execution</span>
               </div>
-              <span className="text-xs font-mono text-slate-400">Tool: {activeStep.tool}</span>
+              <span className="text-xs font-mono text-slate-400">Utility: {activeStep.tool}</span>
             </div>
 
-            {/* Command Box & Execute Button */}
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <div className="bg-cyber-950 border border-cyber-border px-3 py-2 rounded-lg text-xs font-mono text-slate-200 flex-1 truncate">
-                  <span className="text-cyan-500 font-bold select-none">$ </span>
-                  <span>{activeStep.command}</span>
-                </div>
-
-                <button
-                  onClick={handleRunQuery}
-                  disabled={isRunningQuery}
-                  className="bg-cyber-cyan hover:bg-cyan-400 text-cyber-950 font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center space-x-1.5 shrink-0 shadow-md shadow-cyan-950/40 disabled:opacity-50"
-                >
-                  {isRunningQuery ? (
-                    <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Querying...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>Execute Query</span>
-                    </>
-                  )}
-                </button>
+            {/* Command bar & Execute button */}
+            <div className="flex items-center space-x-2">
+              <div className="bg-cyber-950 border border-cyber-border px-3 py-2 rounded-lg text-xs font-mono text-slate-200 flex-1 truncate">
+                <span className="text-cyan-500 font-bold select-none">$ </span>
+                <span>{activeStep.command}</span>
               </div>
+
+              <button
+                onClick={handleRunQuery}
+                disabled={isRunningQuery}
+                className="bg-cyber-cyan hover:bg-cyan-400 text-cyber-950 font-bold text-xs px-4 py-2 rounded-lg transition-all flex items-center space-x-1.5 shrink-0 shadow-md shadow-cyan-950/40 disabled:opacity-50"
+              >
+                {isRunningQuery ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Querying...</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Run Query</span>
+                  </>
+                )}
+              </button>
             </div>
 
-            {/* Live Terminal Screen */}
-            <div className="bg-black/95 border border-slate-800 rounded-lg p-3.5 font-mono text-xs text-slate-300 shadow-inner overflow-x-auto flex-1">
+            {/* Live Terminal Output Window */}
+            <div className="bg-black/95 border border-slate-800 rounded-lg p-3.5 font-mono text-xs text-slate-300 shadow-inner overflow-x-auto flex-1 min-h-[160px]">
               <div className="flex items-center justify-between text-[10px] text-slate-500 border-b border-slate-800/80 pb-1.5 mb-2.5 select-none">
-                <span>STDOUT TERMINAL CAPTURE</span>
-                <span>ENCLAVE: 127.0.0.1 (PASSIVE)</span>
+                <span>STDOUT OUTPUT</span>
+                <span>ENCLAVE: PASSIVE TELEMETRY</span>
               </div>
               <pre className="whitespace-pre-wrap leading-relaxed text-[11px] font-mono">
                 {activeStep.output}
@@ -222,7 +215,7 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
 
               {/* Glowing Line Callout */}
               <div className="mt-3 p-2.5 bg-amber-500/10 border-l-2 border-amber-400 rounded-r text-[11px] text-amber-200">
-                <span className="font-bold">🔎 DETECTED TELEMETRY STRING: </span>
+                <span className="font-bold">🔎 DETECTED FINDING: </span>
                 <span className="font-mono bg-black/60 px-1 py-0.5 rounded text-amber-300 font-bold ml-1">
                   {activeStep.highlightLine}
                 </span>
@@ -235,23 +228,25 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 <span>{activeStep.decoderTitle}</span>
               </div>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
                 {activeStep.decoderExplanation}
               </p>
             </div>
           </div>
         </div>
 
-        {/* PANEL 3: Chain of Custody & Evidence Documentation (Right 4 Columns) */}
+        {/* ======================================================== */}
+        {/* PILLAR 3: Chain of Custody & Evidence Documentation      */}
+        {/* ======================================================== */}
         <div className="lg:col-span-4 flex flex-col space-y-4">
           <div className="bg-cyber-900 border border-cyber-border rounded-xl p-4 shadow-sm flex flex-col justify-between space-y-4 flex-1">
             <div className="space-y-3">
-              <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider">
+              <div className="flex items-center space-x-2 text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider border-b border-cyber-border/80 pb-2">
                 <Database className="w-4 h-4 text-cyan-400" />
-                <span>3. Chain of Custody & Proof</span>
+                <span>Pillar 3: Chain of Custody</span>
               </div>
 
-              {/* Cryptographic Hash */}
+              {/* Cryptographic SHA-256 Hash */}
               <div className="bg-cyber-950 border border-cyber-border rounded-lg p-3 space-y-1.5 font-mono text-xs">
                 <div className="flex items-center justify-between text-slate-400 text-[11px]">
                   <span className="flex items-center space-x-1">
@@ -306,14 +301,14 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                   <span className="text-emerald-400 font-bold block text-[11px] font-mono uppercase tracking-wider">
                     Remediation Handoff:
                   </span>
-                  <p className="text-slate-300 text-xs leading-relaxed">
+                  <p className="text-slate-300 text-xs leading-relaxed font-sans">
                     {activeStep.remediation}
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Save & Advance Action */}
+            {/* Commit Evidence & Advance Actions */}
             <div className="pt-3 border-t border-cyber-border space-y-2">
               <button
                 onClick={handleCommitEvidence}
@@ -340,7 +335,7 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                 <button
                   onClick={onNextCase}
                   className="bg-cyber-850 hover:bg-cyber-800 border border-cyber-border text-cyan-400 text-xs font-mono px-3.5 py-2 rounded-lg transition-colors flex items-center space-x-1 shrink-0"
-                  title="Next Case"
+                  title="Advance to next case"
                 >
                   <span>Next Case</span>
                   <ArrowRight className="w-3.5 h-3.5" />

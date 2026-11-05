@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Header, WorkbenchMode } from './components/Header';
+import { Header } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
 import { InvestigationConsoleView } from './components/InvestigationConsoleView';
 import { CaseBrowserModal } from './components/CaseBrowserModal';
@@ -11,9 +11,7 @@ import { LeadQueueView } from './components/LeadQueueView';
 import { EntityResolutionView } from './components/EntityResolutionView';
 import { RelationshipGraphView } from './components/RelationshipGraphView';
 import { EvidenceRepositoryView } from './components/EvidenceRepositoryView';
-import { SourceReliabilityView } from './components/SourceReliabilityView';
 import { TimelineView } from './components/TimelineView';
-import { ConfidenceEngineView } from './components/ConfidenceEngineView';
 import { ReportGeneratorView } from './components/ReportGeneratorView';
 import { AuditLogsView } from './components/AuditLogsView';
 import { AnalystNotesView } from './components/AnalystNotesView';
@@ -31,9 +29,8 @@ import { missionsData, Mission } from './data/missionsData';
 import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './types';
 
 export const App: React.FC = () => {
-  // Navigation & Workspace State - Defaults to the clean Investigation CONSOLE!
-  const [workbenchMode, setWorkbenchMode] = useState<WorkbenchMode>('CONSOLE');
-  const [activeView, setActiveView] = useState<SubsystemView>('CASES');
+  // Active Navigation View - Defaults to the unified 'INVESTIGATION' console!
+  const [activeView, setActiveView] = useState<SubsystemView>('INVESTIGATION');
 
   // Active Curriculum Case (Defaults to Case 02: Fastly Mail Spoofing Audit)
   const [selectedCurriculumCase, setSelectedCurriculumCase] = useState<Mission>(missionsData[1]);
@@ -161,51 +158,44 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-cyber-950 text-slate-200 overflow-hidden font-sans">
-      {/* Universal Executive Header */}
+      {/* 1. Permanent Universal Executive Header (Always Stable) */}
       <Header
         currentCase={selectedCurriculumCase}
         onOpenCaseBrowser={() => setShowCaseBrowser(true)}
-        workbenchMode={workbenchMode}
-        onToggleWorkbenchMode={setWorkbenchMode}
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
         onOpenGuide={() => setShowGuideModal(true)}
         completedCount={completedCaseIds.length}
       />
 
-      {/* Main Body */}
+      {/* 2. Permanent Layout Frame: Always-Visible Sidebar + Main Subsystem */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar visible in Studio Mode for deep inspection */}
-        {workbenchMode === 'STUDIO' && (
-          <Sidebar
-            activeView={activeView}
-            onSelectView={setActiveView}
-            counts={{
-              cases: cases.length,
-              leads: leads.filter(l => l.status === 'QUEUED').length,
-              entities: entities.length,
-              evidence: evidence.length,
-              gaps: gaps.filter(g => !g.isResolved).length
-            }}
-          />
-        )}
+        {/* Permanent Unified Sidebar */}
+        <Sidebar
+          activeView={activeView}
+          onSelectView={setActiveView}
+          counts={{
+            cases: cases.length,
+            leads: leads.filter(l => l.status === 'QUEUED').length,
+            entities: entities.length,
+            evidence: evidence.length,
+            gaps: gaps.filter(g => !g.isResolved).length
+          }}
+        />
 
-        {/* Dynamic Subsystem Workspace */}
-        <main className="flex-1 overflow-hidden bg-cyber-950 relative">
-          {workbenchMode === 'CONSOLE' && (
+        {/* Dynamic Subsystem Workspace with Identical Visual Framing */}
+        <main className="flex-1 overflow-hidden bg-cyber-950 relative flex flex-col">
+          {activeView === 'INVESTIGATION' && (
             <InvestigationConsoleView
               currentCase={selectedCurriculumCase}
               onOpenCaseBrowser={() => setShowCaseBrowser(true)}
-              onOpenReport={() => {
-                setWorkbenchMode('STUDIO');
-                setActiveView('REPORT');
-              }}
+              onOpenReport={() => setActiveView('REPORT')}
               onSaveEvidence={handleSaveEvidenceFromConsole}
               isCaseCompleted={completedCaseIds.includes(selectedCurriculumCase.id)}
               onNextCase={handleNextCurriculumCase}
             />
           )}
 
-          {workbenchMode === 'TOOL_SANDBOX' && (
+          {activeView === 'TOOLS' && (
             <ToolWorkbenchView
               currentCase={currentCase}
               onAddEvidence={handleAddEvidence}
@@ -214,110 +204,87 @@ export const App: React.FC = () => {
             />
           )}
 
-          {workbenchMode === 'STUDIO' && (
-            <>
-              {activeView === 'CASES' && (
-                <CaseManagementView
-                  cases={cases}
-                  currentCase={currentCase}
-                  onSelectCase={setCurrentCase}
-                  onCreateCase={handleCreateCase}
-                />
-              )}
+          {activeView === 'CASES' && (
+            <CaseManagementView
+              cases={cases}
+              currentCase={currentCase}
+              onSelectCase={setCurrentCase}
+              onCreateCase={handleCreateCase}
+            />
+          )}
 
-              {activeView === 'TOOLS' && (
-                <ToolWorkbenchView
-                  currentCase={currentCase}
-                  onAddEvidence={handleAddEvidence}
-                  onAddEntity={handleAddEntity}
-                  onAddLead={handleAddLead}
-                />
-              )}
+          {activeView === 'INTAKE' && (
+            <IntakeView
+              currentCaseId={currentCase.id}
+              onAddLead={handleAddLead}
+              onNavigateToLeads={() => setActiveView('LEADS')}
+            />
+          )}
 
-              {activeView === 'INTAKE' && (
-                <IntakeView
-                  currentCaseId={currentCase.id}
-                  onAddLead={handleAddLead}
-                  onNavigateToLeads={() => setActiveView('LEADS')}
-                />
-              )}
+          {activeView === 'LEADS' && (
+            <LeadQueueView
+              leads={leads.filter(l => l.caseId === currentCase.id || l.caseId === 'case-001')}
+              onPromoteLead={handlePromoteLead}
+              onDismissLead={handleDismissLead}
+            />
+          )}
 
-              {activeView === 'LEADS' && (
-                <LeadQueueView
-                  leads={leads.filter(l => l.caseId === currentCase.id || l.caseId === 'case-001')}
-                  onPromoteLead={handlePromoteLead}
-                  onDismissLead={handleDismissLead}
-                />
-              )}
+          {activeView === 'ENTITIES' && (
+            <EntityResolutionView
+              entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
+              onConfirmEntity={handleConfirmEntity}
+            />
+          )}
 
-              {activeView === 'ENTITIES' && (
-                <EntityResolutionView
-                  entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
-                  onConfirmEntity={handleConfirmEntity}
-                />
-              )}
+          {activeView === 'RELATIONSHIPS' && (
+            <RelationshipGraphView
+              entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
+              relationships={relationships}
+            />
+          )}
 
-              {activeView === 'RELATIONSHIPS' && (
-                <RelationshipGraphView
-                  entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
-                  relationships={relationships}
-                />
-              )}
+          {activeView === 'EVIDENCE' && (
+            <EvidenceRepositoryView
+              evidence={evidence.filter(ev => ev.caseId === currentCase.id || ev.caseId === 'case-001')}
+            />
+          )}
 
-              {activeView === 'EVIDENCE' && (
-                <EvidenceRepositoryView
-                  evidence={evidence.filter(ev => ev.caseId === currentCase.id || ev.caseId === 'case-001')}
-                />
-              )}
+          {activeView === 'TIMELINE' && (
+            <TimelineView
+              timeline={timeline.filter(t => t.caseId === currentCase.id || t.caseId === 'case-001')}
+            />
+          )}
 
-              {activeView === 'SOURCES' && (
-                <SourceReliabilityView
-                  sources={sources}
-                />
-              )}
+          {activeView === 'REPORT' && (
+            <ReportGeneratorView
+              currentCase={currentCase}
+              report={report}
+            />
+          )}
 
-              {activeView === 'TIMELINE' && (
-                <TimelineView
-                  timeline={timeline.filter(t => t.caseId === currentCase.id || t.caseId === 'case-001')}
-                />
-              )}
+          {activeView === 'AUDIT' && (
+            <AuditLogsView
+              logs={auditLogs}
+            />
+          )}
 
-              {activeView === 'CONFIDENCE' && (
-                <ConfidenceEngineView />
-              )}
+          {activeView === 'NOTES' && (
+            <AnalystNotesView
+              currentCaseId={currentCase.id}
+              notes={notes}
+              onSaveNote={handleSaveNote}
+            />
+          )}
 
-              {activeView === 'REPORT' && (
-                <ReportGeneratorView
-                  currentCase={currentCase}
-                  report={report}
-                />
-              )}
+          {activeView === 'AI_ASSISTANT' && (
+            <AIAssistantView />
+          )}
 
-              {activeView === 'AUDIT' && (
-                <AuditLogsView
-                  logs={auditLogs}
-                />
-              )}
-
-              {activeView === 'NOTES' && (
-                <AnalystNotesView
-                  currentCaseId={currentCase.id}
-                  notes={notes}
-                  onSaveNote={handleSaveNote}
-                />
-              )}
-
-              {activeView === 'AI_ASSISTANT' && (
-                <AIAssistantView />
-              )}
-
-              {activeView === 'GAPS' && (
-                <GapAnalysisView
-                  gaps={gaps.filter(g => g.caseId === currentCase.id || g.caseId === 'case-001')}
-                  onResolveGap={handleResolveGap}
-                />
-              )}
-            </>
+          {activeView === 'GAPS' && (
+            <GapAnalysisView
+              gaps={gaps.filter(g => g.caseId === currentCase.id || g.caseId === 'case-001')}
+              onResolveGap={handleResolveGap}
+            />
           )}
         </main>
       </div>
@@ -327,7 +294,10 @@ export const App: React.FC = () => {
         isOpen={showCaseBrowser}
         onClose={() => setShowCaseBrowser(false)}
         currentCaseId={selectedCurriculumCase.id}
-        onSelectCase={(m) => setSelectedCurriculumCase(m)}
+        onSelectCase={(m) => {
+          setSelectedCurriculumCase(m);
+          setActiveView('INVESTIGATION');
+        }}
         completedCaseIds={completedCaseIds}
       />
 
@@ -336,7 +306,7 @@ export const App: React.FC = () => {
         isOpen={showGuideModal}
         onClose={() => setShowGuideModal(false)}
         onSelectToolAndRun={(_tool) => {
-          setWorkbenchMode('TOOL_SANDBOX');
+          setActiveView('TOOLS');
         }}
       />
 
@@ -358,7 +328,6 @@ export const App: React.FC = () => {
               }}
               onNavigateToLeads={() => {
                 setShowQuickIntakeModal(false);
-                setWorkbenchMode('STUDIO');
                 setActiveView('LEADS');
               }}
             />
