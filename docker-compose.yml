@@ -22,5 +22,33 @@ services:
       - .:/workspace
     working_dir: /workspace
 
+  # Service 3: PostgreSQL Database (OSINT Intelligence Store)
+  osint-db:
+    image: postgres:16-alpine
+    container_name: osint_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sovereign_osint
+      POSTGRES_USER: osint_analyst
+      POSTGRES_PASSWORD: osint_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - osint_postgres_data:/var/lib/postgresql/data
+      - ./dashboard/db/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  # Service 4: Sovereign OSINT Analyst Dashboard (React + TypeScript + Tailwind)
+  osint-dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: osint_analyst_dashboard
+    restart: unless-stopped
+    ports:
+      - "5180:5180"
+    depends_on:
+      - osint-db
+
 volumes:
   spiderfoot_data:
+  osint_postgres_data:

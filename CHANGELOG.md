@@ -5,6 +5,34 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [1.3.0] - 2026-11-04 (Professional OSINT Analyst Dashboard & PostgreSQL Stack)
+
+### Added
+- **Full-Stack OSINT Analyst Dashboard (`dashboard/`):**
+  - **Technology Stack:** React 18, TypeScript, Vite, TailwindCSS (Dark Cyber Intelligence theme inspired by Palantir, Maltego, and MISP), and PostgreSQL 16.
+  - **14 Core Subsystems Implemented:**
+    1. **Investigation Intake System:** Normalization and validation across all 17 public input modalities with live ethics gate screening.
+    2. **Case Management:** Multi-investigation portfolio queue, active PIR tracking, and TLP classification badges.
+    3. **Entity Resolution Engine:** Side-by-side homoglyph comparison, Jaccard attribute vector distance, and mandatory human-in-the-loop merge/split gates (Zero auto-confirmation).
+    4. **Relationship Graph Visualization:** Interactive SVG node-link link analysis across 7 property buckets with directed weighted edges and Admiralty confidence badges.
+    5. **Evidence Repository:** ISO/IEC 27037 compliant ledger with cryptographic SHA-256 verification sandbox, full-viewport screenshot tags, and Wayback snapshots.
+    6. **Lead Generation Queue:** Active telemetry triage queue supporting promotion to evidence or dismissal.
+    7. **Source Reliability Scoring:** Interactive NATO STANAG 2022 Admiralty 6×6 matrix with catalog of vetted passive sources.
+    8. **Timeline Analysis:** Chronological event stream tracking acquisitions, certificate issuances, and DNS drift.
+    9. **Confidence Scoring Engine:** Mathematical Confidence Index sandbox calculating $CI = (W_S \times S) + (W_C \times C) + (W_K \times K) - P_{\text{staleness}}$.
+    10. **Report Generator:** One-click markdown, JSON, and PDF export of Executive BLUF briefings, IOC ledgers, and SIGMA detection rules.
+    11. **Immutable Audit Logs:** Tamper-evident ledger tracking analyst IDs, client IPs, timestamps, and entity state deltas.
+    12. **Analyst Notes & Scratchpad:** Markdown working space for competing hypotheses with tag filtering.
+    13. **AI Research Assistant:** Local LLM workflow sandbox with specialized prompt templates for normalization, timeline extraction, and BLUF drafting with strict human-verification banners.
+    14. **Gap Analysis Engine:** Automated blind-spot detection for uncorroborated single-source claims, stale records (>24 months), and dangling pointers.
+- **Database Architecture (`dashboard/db/schema.sql`):**
+  - Production PostgreSQL schema with 11 relational tables, UUID primary keys, ENUM types, and query optimization indexes.
+- **Docker Compose Orchestration (`docker-compose.yml`):**
+  - Integrated `osint-db` (Postgres 16 Alpine on port `:5432` with auto-init schema).
+  - Integrated `osint-dashboard` (Vite preview web server on port `:5180`).
+
+---
+
 ## [1.2.0] - 2026-11-04 (Complete 30-Case Curriculum, Standardized Forensics & Capstone)
 
 ### Added
