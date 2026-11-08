@@ -5,6 +5,24 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.3.2] - 2026-11-08 (Turnkey Windows Orchestrator, Public README Overhaul & Diagnostic Suite)
+
+### Added
+- **Turnkey Windows 1-Click Orchestrator (`start_osint_lab.bat`, `stop_osint_lab.bat`):**
+  - Upgraded `start_osint_lab.bat` to automatically spin up all 4 platform tiers (Docker Compose stack, PostgreSQL 16 on `:5432`, SpiderFoot on `:5001`, Python Tool & REST Daemon on `:5002`, and Vite Analyst Dashboard on `:5180`), run pre-flight diagnostics, and open `http://localhost:5180` in the browser.
+  - Upgraded `stop_osint_lab.bat` to gracefully terminate background Node and Python daemons and tear down Docker containers.
+- **Canonical Public `README.md` Commercial Overhaul:**
+  - Complete overhaul for GitHub public release (`candysuec/ethical-osint-lab`):
+    - Distributed topology ASCII architecture diagram across ports `:5180`, `:5002`, `:5001`, and `:5432`.
+    - Four Non-Negotiable Ethical & Legal Invariants (100% Passive, Zero Port Scanning, Zero Citizen Profiling, Law 5 Ground Truth Over Synthetic Coherence).
+    - Comprehensive directory of all 16 specialized analyst workspaces.
+    - Full 4-tier 30-case graded curriculum breakdown + Capstone Horizon Shield.
+    - Instant 1-click quickstart instructions.
+- **Automated Pre-Flight Verification Diagnostic Suite (`scripts/verify_suite.py`):**
+  - Fast 3-second system health check verifying all HTTP endpoints, daemon health, Docker CLI workstation, PostgreSQL case count (31 seeded records), and live DNS tool stream.
+
+---
+
 ## [2.3.1] - 2026-11-08 (Law 5 Ground Truth Anchoring & Top-Down Outline Hierarchy)
 
 ### Added
