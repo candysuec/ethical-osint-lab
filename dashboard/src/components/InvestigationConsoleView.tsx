@@ -291,6 +291,10 @@ export const InvestigationConsoleView: React.FC<InvestigationConsoleViewProps> =
                 <span>100% Passive DNS / Public Record queries.</span>
               </li>
               <li className="flex items-start space-x-1.5">
+                <span className="text-amber-400 font-bold">⚓</span>
+                <span>Ground Truth Over Synthetic Coherence: Enforce 2-Source Rule; zero unverified AI claims.</span>
+              </li>
+              <li className="flex items-start space-x-1.5">
                 <span className="text-rose-400 font-bold">✕</span>
                 <span>Zero active port scanning (`nmap`) or fuzzing.</span>
               </li>

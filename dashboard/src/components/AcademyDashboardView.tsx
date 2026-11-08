@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { 
-  Shield, Award, Terminal, Wrench, Network, FileCheck, 
+  Shield, ShieldCheck, Award, Terminal, Wrench, Network, FileCheck, 
   Search, ArrowRight, Play, CheckCircle2, AlertTriangle, 
   ExternalLink, Layers, Sparkles, Filter, Lock, BookOpen,
-  FolderKanban, Activity, Compass, Database, Check, Calculator, CheckSquare
+  FolderKanban, Activity, Compass, Database, Check, Calculator, CheckSquare,
+  ChevronDown, ChevronUp
 } from 'lucide-react';
 import { missionsData, Mission } from '../data/missionsData';
 import { SubsystemView } from './Sidebar';
@@ -29,6 +30,7 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
 }) => {
   const [selectedTierFilter, setSelectedTierFilter] = useState<'ALL' | 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'CAPSTONE'>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isCompletedCollapsed, setIsCompletedCollapsed] = useState<boolean>(true);
 
   const totalCases = missionsData.length;
   const completedCount = completedCaseIds.length;
@@ -41,7 +43,7 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
   // Active mission object
   const activeMission = missionsData.find(m => m.id === currentCaseId) || missionsData[0];
 
-  // Filtered missions
+  // Filtered missions based on search and tier
   const filteredMissions = missionsData.filter(m => {
     if (selectedTierFilter !== 'ALL' && selectedTierFilter !== 'CAPSTONE' && m.tier !== selectedTierFilter) {
       return false;
@@ -59,6 +61,11 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
     }
     return true;
   });
+
+  // Law 5 Top-Down Outline Hierarchy: Active case floats to top, queued cases next, completed collapse to bottom
+  const activeMissionItem = filteredMissions.find(m => m.id === currentCaseId);
+  const queuedMissions = filteredMissions.filter(m => m.id !== currentCaseId && !completedCaseIds.includes(m.id));
+  const completedMissions = filteredMissions.filter(m => completedCaseIds.includes(m.id));
 
   return (
     <div className="space-y-8 pb-12">
@@ -81,6 +88,10 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               30 Graded Operations + Capstone
             </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-mono font-bold text-amber-300">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Law 5 Ground Truth: Anti-Synthetic Reality Drift
+            </span>
           </div>
 
           <div className="max-w-3xl space-y-2">
@@ -95,6 +106,12 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
               Enforces <span className="text-cyber-cyan font-mono font-semibold">ISO/IEC 27037:2012</span> SHA-256 digital evidence preservation, 
               <span className="text-emerald-400 font-mono font-semibold">NATO STANAG 2022</span> Admiralty evaluation (A1–F6), and strictly passive defensive analysis.
             </p>
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200/90 font-mono flex items-start gap-2">
+              <span className="text-amber-400 font-bold text-sm leading-none">⚓</span>
+              <span>
+                <strong>Ground Truth Invariant:</strong> Coherence is not contact. This laboratory trains analysts to capture primary-source cryptographic telemetry rather than accepting synthetic AI coherence. Uncorroborated claims default to NATO F6 until independently verified under the Two-Source Rule.
+              </span>
+            </div>
           </div>
 
           {/* Quick CTA Actions */}
@@ -652,103 +669,224 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
           </button>
         </div>
 
-        {/* 30 Cases Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredMissions.map((mission) => {
-            const isCompleted = completedCaseIds.includes(mission.id);
-            const isActive = currentCaseId === mission.id;
+        {/* 1. TOP LEVEL: Active Operation In Progress (Floats on Top) */}
+        {activeMissionItem && (
+          <div className="rounded-xl border-2 border-cyber-cyan bg-gradient-to-r from-cyber-900 via-cyber-950 to-cyan-950/40 p-5 shadow-lg shadow-cyan-500/10 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-cyan-500/30 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                </span>
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-cyan-300">
+                  Active In-Progress Operation • Currently Engaged
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono border bg-cyan-500/20 text-cyan-300 border-cyan-500/40">
+                  {activeMissionItem.tier}
+                </span>
+                <span className="font-mono text-xs font-bold text-white">
+                  {activeMissionItem.caseNumber}
+                </span>
+              </div>
+            </div>
 
-            const getTierColor = (tier: string) => {
-              switch (tier) {
-                case 'BEGINNER': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                case 'INTERMEDIATE': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30';
-                case 'ADVANCED': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
-                default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
-              }
-            };
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="space-y-1.5 max-w-2xl">
+                <h3 className="font-mono text-base sm:text-lg font-bold text-white">
+                  {activeMissionItem.title}
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  {activeMissionItem.oneSentenceObjective}
+                </p>
+                <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px] font-mono text-slate-400">
+                  <span>Target: <strong className="text-emerald-400">{activeMissionItem.target}</strong></span>
+                  <span>•</span>
+                  <span>Category: <strong className="text-slate-300">{activeMissionItem.category}</strong></span>
+                  <span>•</span>
+                  <span>Primary Tool: <strong className="text-cyan-300">{activeMissionItem.steps[0]?.tool || 'dig / curl'}</strong></span>
+                </div>
+              </div>
 
-            return (
-              <div
-                key={mission.id}
-                className={`flex flex-col justify-between rounded-xl border p-5 transition-all ${
-                  isActive 
-                    ? 'bg-cyber-900 border-cyber-cyan shadow-lg shadow-cyan-500/10 ring-1 ring-cyber-cyan' 
-                    : isCompleted
-                      ? 'bg-cyber-900/90 border-emerald-500/40 hover:border-emerald-500'
-                      : 'bg-cyber-900 border-cyber-border hover:border-slate-500'
-                }`}
-              >
-                <div className="space-y-3">
-                  {/* Top Bar: Case Number & Status Badges */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-white">
-                        {mission.caseNumber}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-mono border ${getTierColor(mission.tier)}`}>
-                        {mission.tier}
-                      </span>
-                    </div>
+              <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onSelectCase(activeMissionItem);
+                    onNavigateToView('INVESTIGATION');
+                  }}
+                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-cyber-950 font-mono text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.02]"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  Resume 3-Pillar Console →
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
-                    {isCompleted ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                        <Check className="w-3 h-3" />
-                        Verified
-                      </span>
-                    ) : isActive ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/30 animate-pulse">
-                        ● Active
-                      </span>
-                    ) : (
+        {/* 2. SECOND LEVEL: Available Curriculum Operations Queue */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between text-xs font-mono text-slate-400">
+            <span className="font-bold text-slate-300">
+              Curriculum Operations Queue ({queuedMissions.length} Available)
+            </span>
+            <span>Click any operation to launch investigation</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {queuedMissions.map((mission) => {
+              const getTierColor = (tier: string) => {
+                switch (tier) {
+                  case 'BEGINNER': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+                  case 'INTERMEDIATE': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30';
+                  case 'ADVANCED': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+                  default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+                }
+              };
+
+              return (
+                <div
+                  key={mission.id}
+                  className="flex flex-col justify-between rounded-xl border bg-cyber-900 border-cyber-border hover:border-slate-500 p-5 transition-all"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-white">
+                          {mission.caseNumber}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono border ${getTierColor(mission.tier)}`}>
+                          {mission.tier}
+                        </span>
+                      </div>
                       <span className="text-[11px] font-mono text-slate-500">
                         {mission.xp} XP
                       </span>
-                    )}
+                    </div>
+
+                    <div>
+                      <h3 className="font-mono text-sm font-bold text-white line-clamp-1">
+                        {mission.title}
+                      </h3>
+                      <span className="text-[11px] font-mono text-cyber-cyan block mt-0.5">
+                        Target: {mission.target} • {mission.category}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                      {mission.oneSentenceObjective}
+                    </p>
                   </div>
 
-                  {/* Title & Category */}
-                  <div>
-                    <h3 className="font-mono text-sm font-bold text-white line-clamp-1">
-                      {mission.title}
-                    </h3>
-                    <span className="text-[11px] font-mono text-cyber-cyan block mt-0.5">
-                      Target: {mission.target} • {mission.category}
-                    </span>
-                  </div>
+                  <div className="pt-4 mt-4 border-t border-cyber-border/60 flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
+                      <span>Tool:</span>
+                      <span className="text-slate-300">{mission.steps[0]?.tool || 'dig / curl'}</span>
+                    </div>
 
-                  {/* Objective */}
-                  <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-                    {mission.oneSentenceObjective}
-                  </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onSelectCase(mission);
+                        onNavigateToView('INVESTIGATION');
+                      }}
+                      className="px-3 py-1.5 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5 transition-all bg-cyber-800 hover:bg-cyber-700 text-cyan-300 border border-cyber-border"
+                    >
+                      Investigate
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-
-                {/* Footer Action */}
-                <div className="pt-4 mt-4 border-t border-cyber-border/60 flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                    <span>Tool:</span>
-                    <span className="text-slate-300">{mission.steps[0]?.tool || 'dig / curl'}</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onSelectCase(mission);
-                      onNavigateToView('INVESTIGATION');
-                    }}
-                    className={`px-3 py-1.5 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5 transition-all ${
-                      isActive
-                        ? 'bg-cyan-500 text-cyber-950 hover:bg-cyan-400'
-                        : 'bg-cyber-800 hover:bg-cyber-700 text-cyan-300 border border-cyber-border'
-                    }`}
-                  >
-                    {isActive ? 'Continue Case' : 'Investigate'}
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
+
+        {/* 3. THIRD LEVEL: Completed & Verified Dossiers (Collapsible, Dropped to Bottom) */}
+        {completedMissions.length > 0 && (
+          <div className="pt-6 border-t border-cyber-border/60 space-y-3">
+            <button
+              type="button"
+              onClick={() => setIsCompletedCollapsed(!isCompletedCollapsed)}
+              className="w-full flex items-center justify-between p-3.5 rounded-xl bg-cyber-900 hover:bg-cyber-850 border border-emerald-500/30 text-xs font-mono text-emerald-400 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span className="font-bold">Completed & Verified Operations ({completedMissions.length} of {missionsData.length})</span>
+                <span className="hidden sm:inline text-[10px] text-slate-400">— All ISO/IEC 27037 SHA-256 evidence preserved</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                <span>{isCompletedCollapsed ? 'Expand Completed' : 'Collapse'}</span>
+                {isCompletedCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+              </div>
+            </button>
+
+            {!isCompletedCollapsed && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+                {completedMissions.map((mission) => {
+                  return (
+                    <div
+                      key={mission.id}
+                      className="flex flex-col justify-between rounded-xl border bg-cyber-900/90 border-emerald-500/40 hover:border-emerald-500 p-5 transition-all"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-bold text-white">
+                              {mission.caseNumber}
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-mono border bg-emerald-500/20 text-emerald-300 border-emerald-500/30">
+                              {mission.tier}
+                            </span>
+                          </div>
+
+                          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                            <Check className="w-3 h-3" />
+                            Verified
+                          </span>
+                        </div>
+
+                        <div>
+                          <h3 className="font-mono text-sm font-bold text-white line-clamp-1">
+                            {mission.title}
+                          </h3>
+                          <span className="text-[11px] font-mono text-emerald-400 block mt-0.5">
+                            Target: {mission.target} • {mission.category}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
+                          {mission.oneSentenceObjective}
+                        </p>
+                      </div>
+
+                      <div className="pt-4 mt-4 border-t border-cyber-border/60 flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-400/80">
+                          <span>Status:</span>
+                          <span>Audit Ready</span>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onSelectCase(mission);
+                            onNavigateToView('INVESTIGATION');
+                          }}
+                          className="px-3 py-1.5 rounded-lg font-mono text-xs font-bold flex items-center gap-1.5 transition-all bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/50"
+                        >
+                          Review Dossier
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

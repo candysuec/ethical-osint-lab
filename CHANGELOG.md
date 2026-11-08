@@ -5,6 +5,22 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.3.1] - 2026-11-08 (Law 5 Ground Truth Anchoring & Top-Down Outline Hierarchy)
+
+### Added
+- **Law 5 Ground Truth & Anti-Synthetic Reality Drift Invariants:**
+  - Explicitly anchored the entire laboratory curriculum against AI hallucinations and recursive model drift.
+  - Added Ground Truth Anchor banner in `SourceReliabilityView.tsx`: Enforces that synthetic AI coherence is never accepted as fact without primary-source ISO/IEC 27037 SHA-256 cryptographic proofs and two-source NATO STANAG 2022 corroboration (unverified claims default to F6).
+  - Added Ground Truth Anchor in `InvestigationConsoleView.tsx` (Pillar 1 Ethical Red Lines).
+  - Added visual Anti-Synthetic Reality Drift banner to `AcademyDashboardView.tsx`.
+- **Top-Down Outline Hierarchy on 30-Case Catalog Grid (`AcademyDashboardView.tsx`):**
+  - Restructured 30-case catalog into clean visual hierarchy adhering to Law 5:
+    1. *Top Level (Active Operation):* Active in-progress operation floats at the very top in a dedicated glowing cyan card with one-click "Resume 3-Pillar Console" action and PIR summary.
+    2. *Second Level (Curriculum Queue):* Available operations displayed in a structured 3-column grid sorted by tier.
+    3. *Third Level (Completed Dossiers):* Completed/verified cases drop to the bottom in a collapsible accordion bar (`Completed & Verified Operations (N of 30)`), defaulting to collapsed to keep the screen uncluttered.
+
+---
+
 ## [2.3.0] - 2026-11-08 (Enterprise PostgreSQL REST Persistence, Live SpiderFoot Bridge & Dynamic Multi-Case Graph State)
 
 ### Added

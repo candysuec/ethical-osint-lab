@@ -39,6 +39,19 @@ export const SourceReliabilityView: React.FC<SourceReliabilityProps> = ({ source
         </p>
       </div>
 
+      {/* Ground Truth & Anti-Synthetic Reality Drift Anchor */}
+      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-mono space-y-2">
+        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase tracking-wider">
+          <span className="text-sm">⚓</span>
+          <span>Law 5 Invariant: Ground Truth Over Synthetic Coherence</span>
+        </div>
+        <p className="text-slate-300 leading-relaxed font-sans">
+          <strong>Coherence is not contact.</strong> A fluent, beautifully worded AI summary does <em>not</em> constitute factual intelligence. In defensive OSINT, accepting synthetic coherence without primary-source proof causes catastrophic reality drift. 
+          To reach <strong>A1 (Confirmed Fact)</strong>, a claim must be anchored by <strong>ISO/IEC 27037 SHA-256 cryptographic hashes</strong> and corroborated by at least two independent primary-source technical conduits (e.g., authoritative root DNS zone + RFC 6962 CT logbook). 
+          Unverified AI claims or single uncorroborated leads permanently default to <strong>F6 (Truth Cannot Be Judged)</strong>.
+        </p>
+      </div>
+
       {/* Interactive 6x6 Matrix */}
       <div className="bg-cyber-900 border border-cyber-border rounded-lg p-5 space-y-4">
         <div className="flex justify-between items-center">
