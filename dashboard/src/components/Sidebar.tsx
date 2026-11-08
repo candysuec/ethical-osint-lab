@@ -2,10 +2,12 @@ import React from 'react';
 import { 
   FolderKanban, Inbox, GitMerge, Network, FileCheck,
   History, FileText, Activity, StickyNote, 
-  Sparkles, AlertOctagon, Terminal, Shield, Wrench, X, Award, FileSearch
+  Sparkles, AlertOctagon, Terminal, Shield, Wrench, X, Award, FileSearch,
+  LayoutDashboard, Compass
 } from 'lucide-react';
 
 export type SubsystemView = 
+  | 'DASHBOARD'     // Executive Academy Command Center & 30-case curriculum matrix
   | 'INVESTIGATION' // The unified case investigation console
   | 'CAPSTONE'      // Operation Horizon Shield Pre-IPO Audit Capstone
   | 'TOOLS'         // The tool sandbox
@@ -49,11 +51,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       category: 'INVESTIGATION WORKFLOW',
       items: [
         { 
+          id: 'DASHBOARD' as SubsystemView, 
+          label: 'Academy Hub (30 Cases)', 
+          icon: LayoutDashboard, 
+          badge: 'Overview',
+          badgeColor: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+        },
+        { 
           id: 'INVESTIGATION' as SubsystemView, 
           label: 'Active Case Console', 
           icon: Shield, 
           badge: 'Curriculum',
-          badgeColor: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+          badgeColor: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
         },
         { 
           id: 'CAPSTONE' as SubsystemView, 
@@ -226,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>100% Passive OSINT</span>
         </span>
-        <span>v1.5.0</span>
+        <span>v2.0.0</span>
       </div>
     </div>
   );

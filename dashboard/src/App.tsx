@@ -19,6 +19,7 @@ import { AIAssistantView } from './components/AIAssistantView';
 import { GapAnalysisView } from './components/GapAnalysisView';
 import { CapstoneInvestigationView } from './components/CapstoneInvestigationView';
 import { ExifDropzoneView } from './components/ExifDropzoneView';
+import { AcademyDashboardView } from './components/AcademyDashboardView';
 
 import { 
   initialCases, initialEntities, initialRelationships, 
@@ -32,8 +33,8 @@ import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './ty
 import { loadStoredData, saveStoredData } from './utils/storage';
 
 export const App: React.FC = () => {
-  // Active Navigation View - Defaults to the unified 'INVESTIGATION' console!
-  const [activeView, setActiveView] = useState<SubsystemView>('INVESTIGATION');
+  // Active Navigation View - Defaults to the overarching Academy Hub & 30-case matrix!
+  const [activeView, setActiveView] = useState<SubsystemView>('DASHBOARD');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Active Curriculum Case (Defaults to Case 02: Fastly Mail Spoofing Audit)
@@ -197,6 +198,8 @@ export const App: React.FC = () => {
       {/* 1. Permanent Universal Executive Header (Always Stable) */}
       <Header
         currentCase={selectedCurriculumCase}
+        activeView={activeView}
+        onSelectView={setActiveView}
         onOpenCaseBrowser={() => setShowCaseBrowser(true)}
         onOpenQuickIntake={() => setShowQuickIntakeModal(true)}
         onOpenGuide={() => setShowGuideModal(true)}
@@ -227,6 +230,23 @@ export const App: React.FC = () => {
           role="main"
           className="flex-1 overflow-hidden bg-cyber-950 relative flex flex-col min-w-0"
         >
+          {activeView === 'DASHBOARD' && (
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+              <AcademyDashboardView
+                completedCaseIds={completedCaseIds}
+                currentCaseId={selectedCurriculumCase.id}
+                onSelectCase={(m) => {
+                  setSelectedCurriculumCase(m);
+                  setActiveView('INVESTIGATION');
+                }}
+                onNavigateToView={(view) => setActiveView(view)}
+                evidenceCount={evidence.length}
+                leadsCount={leads.filter(l => l.status === 'QUEUED').length}
+                entitiesCount={entities.length}
+              />
+            </div>
+          )}
+
           {activeView === 'INVESTIGATION' && (
             <InvestigationConsoleView
               currentCase={selectedCurriculumCase}

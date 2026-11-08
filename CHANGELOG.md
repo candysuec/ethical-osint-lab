@@ -5,6 +5,23 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.1.0] - 2026-11-08 (Executive Academy Command Center & 30-Case Curriculum Catalog Grid)
+
+### Added
+- **Executive Academy Command Center (`AcademyDashboardView.tsx`):**
+  - High-impact mission control overview that sets the tone for the platform as a commercial cyber intelligence training academy.
+  - Live metric indicators: Curriculum completion progress (1/30), Investigator Mastery XP, ISO/IEC 27037 Evidence Vault integrity, and Correlated Entities (STANAG A1/B2).
+  - Quick Launch Action Cards linking to the 8 primary specialized suites (Active Console, Capstone Pre-IPO Audit, Tool Sandbox, EXIF Dropzone, Maltego Graph, Evidence Vault, Reports, and Portfolio).
+- **Interactive 30-Case Curriculum Catalog Grid:**
+  - Directly exposes all 30 real-world operations across Tier 1 (Beginner Cases 01–10), Tier 2 (Intermediate Cases 11–20), Tier 3 (Advanced Cases 21–30), and Tier 4 (Capstone).
+  - Real-time search engine filtering cases by domain, tool, technique, or PIR.
+  - 1-click **Investigate** button to load any case directly into the 3-pillar terminal console.
+- **Top Quick-Switch Navigation Tabs (`Header.tsx`):**
+  - Added primary workspace navigation tabs in the universal header: Academy Hub (30), Active Console, Capstone, Tools, EXIF Dropzone, and Graph.
+  - Made Academy Hub the default landing screen upon app initialization.
+
+---
+
 ## [2.0.0] - 2026-11-05 (Capstone Operation Horizon Shield, Maltego Graph Transforms & Client-Side EXIF Dropzone)
 
 ### Added
