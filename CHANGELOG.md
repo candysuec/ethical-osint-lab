@@ -5,6 +5,34 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.3.0] - 2026-11-08 (Enterprise PostgreSQL REST Persistence, Live SpiderFoot Bridge & Dynamic Multi-Case Graph State)
+
+### Added
+- **Enterprise PostgreSQL 16 REST API Integration (`:5432` / `:5002`):**
+  - Built frontend client `dashboard/src/utils/backendApi.ts` establishing unified REST communication with the backend service.
+  - Overhauled `scripts/tool_daemon.py` to serve high-performance REST endpoints:
+    - `/api/health`: System health monitor reporting statuses for database, SpiderFoot, and Docker CLI workstation.
+    - `/api/cases`: Queries active case files from PostgreSQL `cases` table.
+    - `/api/evidence`: Real-time ingestion and retrieval of ISO/IEC 27037 evidence items.
+    - `/api/entities`: Entity retrieval and ingestion with confidence metrics and disambiguation notes.
+    - `/api/relationships`: Relational link queries for graph visualization.
+    - `/api/timeline`: Chronological event ingestion and retrieval.
+    - `/api/tools/run`: Live defensive tool runner executing inside `osint_cli_workstation`.
+  - Initialized all 11 relational schema tables (`cases`, `entities`, `entity_relationships`, `evidence_items`, `leads`, `sources`, `timeline_events`, `audit_logs`, `gap_analyses`, `intelligence_reports`, `analyst_notes`).
+  - Seeded all 31 curriculum cases into PostgreSQL via `scripts/seed_curriculum.js` and `seed_curriculum.sql`.
+  - Wired frontend `App.tsx` to automatically sync evidence and entities to PostgreSQL on commit (`handleAddEvidence`, `handleAddEntity`).
+- **Live SpiderFoot Reconnaissance Bridge (`http://localhost:5001`):**
+  - Integrated live SpiderFoot reconnaissance engine into `ToolWorkbenchView.tsx` via `/api/spiderfoot/scans`, `/api/spiderfoot/summary`, and `/api/spiderfoot/scans/start`.
+  - Enabled 1-click promotion of live SpiderFoot scan findings directly into the verified PostgreSQL evidence ledger.
+- **Dynamic Multi-Case Graph & Timeline State Engine (`mockData.ts`, `App.tsx`):**
+  - Implemented dynamic state generators `getCaseEntities()`, `getCaseRelationships()`, and `getCaseTimeline()` in `mockData.ts`.
+  - Switching cases in Academy Hub or Active Console dynamically updates the Relationship Graph, Entity Resolution, and Timeline views to reflect the specific target's infrastructure and entities.
+- **Print `@media` CSS Polish & Comprehensive Field Manual (`index.css`, `13_STUDENT_OPERATIONAL_FIELD_MANUAL.md`):**
+  - Added print rules in `index.css` (`.printable-document`, `-webkit-print-color-adjust: exact`) for clean PDF generation of Executive Reports and Capstone Diplomas without UI clutter.
+  - Upgraded `docs/13_STUDENT_OPERATIONAL_FIELD_MANUAL.md` with complete 4-scenario walkthrough (Beginner, Intermediate, Advanced, Capstone) and 16-subsystem guide.
+
+---
+
 ## [2.2.0] - 2026-11-08 (Restoration & Unified Integration of All Platform Workspaces)
 
 ### Added

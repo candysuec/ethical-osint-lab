@@ -24,3 +24,49 @@
     background: #06B6D4;
   }
 }
+
+/* =====================================================================
+   PRINT MEDIA STYLES - DIPLOMA & EXECUTIVE BRIEFING PERFECTION
+   ===================================================================== */
+@media print {
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+
+  body {
+    background: #060B13 !important;
+    color: #F8FAFC !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide interactive chrome and navigation during print */
+  header, 
+  aside, 
+  nav, 
+  button:not(.print-include),
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure printable certificates and executive reports render at 100% width with no breaks */
+  .printable-document {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Clean up dialog backdrops for printing */
+  .fixed.inset-0 {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+}

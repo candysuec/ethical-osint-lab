@@ -435,3 +435,151 @@ level: critical`,
   approvedBy: undefined,
   generatedAt: '2026-11-04 21:00:00 UTC'
 };
+
+export function getCaseEntities(caseId: string, missionTarget?: string, missionTitle?: string): Entity[] {
+  if (caseId === 'case-001') {
+    return initialEntities;
+  }
+  const target = missionTarget || 'target-entity.com';
+  const cleanTarget = target.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+  const title = missionTitle || 'Case Investigation Target';
+
+  return [
+    {
+      id: `ent-${caseId}-01`,
+      caseId: caseId,
+      canonicalName: title.split(':')[0].trim() || cleanTarget,
+      entityType: 'Target Organization / Apex Domain',
+      isConfirmed: true,
+      confidenceScore: 0.98,
+      attributes: {
+        'Target Primary Identifier': cleanTarget,
+        'Investigation Status': 'Active Defensive Scope',
+        'CFAA Audit Boundary': 'Passive Telemetry Only'
+      },
+      disambiguationNotes: 'Primary verified target entity under investigation.',
+      resolvedBy: 'Lead_Investigator_Chevalier',
+      resolvedAt: '2026-11-05 10:00:00 UTC'
+    },
+    {
+      id: `ent-${caseId}-02`,
+      caseId: caseId,
+      canonicalName: `ns1.${cleanTarget.toLowerCase().replace(/[^a-z0-9]/g, '')}.net`,
+      entityType: 'Authoritative Name Server',
+      isConfirmed: true,
+      confidenceScore: 0.95,
+      attributes: {
+        'DNS Authority': 'Primary Root Zone Delegation',
+        'DNSSEC Status': 'Active Validating Resolver'
+      },
+      disambiguationNotes: 'Corroborated via authoritative SOA and NS records.',
+      resolvedBy: 'Lead_Investigator_Chevalier',
+      resolvedAt: '2026-11-05 10:15:00 UTC'
+    },
+    {
+      id: `ent-${caseId}-03`,
+      caseId: caseId,
+      canonicalName: `AS54113 (Global Anycast Transit)`,
+      entityType: 'Autonomous System Number',
+      isConfirmed: true,
+      confidenceScore: 0.92,
+      attributes: {
+        'BGP Prefixes': '68 Announced CIDRs',
+        'Tier-1 Upstream': 'Cogent, Arelion, NTT'
+      },
+      disambiguationNotes: 'Extracted via BGPView REST looking-glass telemetry.',
+      resolvedBy: 'Lead_Investigator_Chevalier',
+      resolvedAt: '2026-11-05 10:30:00 UTC'
+    },
+    {
+      id: `ent-${caseId}-04`,
+      caseId: caseId,
+      canonicalName: `mail-inbound.${cleanTarget}`,
+      entityType: 'Mail Exchange Perimeter',
+      isConfirmed: false,
+      confidenceScore: 0.70,
+      attributes: {
+        'SPF Status': '~all (SoftFail)',
+        'DMARC Enforcement': 'p=none (Monitoring Mode)'
+      },
+      disambiguationNotes: 'Uncorroborated mail routing configuration requiring SPF/DMARC hardening.',
+      resolvedBy: undefined,
+      resolvedAt: undefined
+    }
+  ];
+}
+
+export function getCaseRelationships(caseId: string, entities: Entity[]): EntityRelationship[] {
+  if (caseId === 'case-001') {
+    return initialRelationships;
+  }
+  if (entities.length < 2) return [];
+
+  return [
+    {
+      id: `rel-${caseId}-01`,
+      sourceEntityId: entities[0].id,
+      targetEntityId: entities[1].id,
+      relationshipType: 'DELEGATES_DNS_AUTHORITY',
+      propertyBucket: 'Digital Presence',
+      edgeWeight: 0.95,
+      admiraltyScore: 'A1',
+      corroborationCount: 2
+    },
+    {
+      id: `rel-${caseId}-02`,
+      sourceEntityId: entities[0].id,
+      targetEntityId: entities[2] ? entities[2].id : entities[1].id,
+      relationshipType: 'ROUTES_TRAFFIC_VIA_ASN',
+      propertyBucket: 'Organizations',
+      edgeWeight: 0.90,
+      admiraltyScore: 'A1',
+      corroborationCount: 3
+    },
+    {
+      id: `rel-${caseId}-03`,
+      sourceEntityId: entities[0].id,
+      targetEntityId: entities[3] ? entities[3].id : entities[1].id,
+      relationshipType: 'MAINTAINS_MAIL_EXCHANGE',
+      propertyBucket: 'Digital Presence',
+      edgeWeight: 0.75,
+      admiraltyScore: 'B2',
+      corroborationCount: 1
+    }
+  ];
+}
+
+export function getCaseTimeline(caseId: string, targetName: string): TimelineEvent[] {
+  if (caseId === 'case-001') {
+    return initialTimeline;
+  }
+  return [
+    {
+      id: `tl-${caseId}-01`,
+      caseId: caseId,
+      eventTimestamp: '2020-04-12 11:22:15 UTC',
+      title: 'Initial Domain Registration & Apex DNS Setup',
+      description: `Target entity registered domain ${targetName} under ICANN accredited registrar.`,
+      eventType: 'INFRASTRUCTURE_REGISTERED',
+      confidenceScore: '0.95'
+    },
+    {
+      id: `tl-${caseId}-02`,
+      caseId: caseId,
+      eventTimestamp: '2024-03-15 09:12:00 UTC',
+      title: 'Wildcard Certificate Transparency Log Entry',
+      description: `Let's Encrypt issued TLS certificate covering *.${targetName} recorded in public append-only RFC 6962 ledger.`,
+      eventType: 'CERT_ISSUED',
+      confidenceScore: '0.99'
+    },
+    {
+      id: `tl-${caseId}-03`,
+      caseId: caseId,
+      eventTimestamp: '2026-11-01 14:00:00 UTC',
+      title: 'Defensive Attack Surface Reconnaissance Initiated',
+      description: `Passive reconnaissance sweep launched against ${targetName} using Sovereign OSINT Workbench.`,
+      eventType: 'DNS_DRIFT',
+      confidenceScore: '0.90'
+    }
+  ];
+}

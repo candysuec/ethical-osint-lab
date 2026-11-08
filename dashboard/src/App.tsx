@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from './components/Header';
 import { Sidebar, SubsystemView } from './components/Sidebar';
 import { InvestigationConsoleView } from './components/InvestigationConsoleView';
@@ -29,12 +29,14 @@ import {
   initialCases, initialEntities, initialRelationships, 
   initialEvidence, initialLeads, initialSources, 
   initialTimeline, initialNotes, initialAuditLogs, 
-  initialGaps, initialReport 
+  initialGaps, initialReport,
+  getCaseEntities, getCaseRelationships, getCaseTimeline
 } from './data/mockData';
 
 import { missionsData, Mission } from './data/missionsData';
 import { Case, Lead, Entity, EvidenceItem, AnalystNote, GapAnalysis } from './types';
 import { loadStoredData, saveStoredData } from './utils/storage';
+import { saveEvidenceToPostgres, saveEntityToPostgres } from './utils/backendApi';
 
 export const App: React.FC = () => {
   // Active Navigation View - Defaults to the overarching Academy Hub & 30-case matrix!
@@ -136,6 +138,7 @@ export const App: React.FC = () => {
 
   const handleAddEvidence = (item: EvidenceItem) => {
     setEvidence([item, ...evidence]);
+    saveEvidenceToPostgres(item).catch(() => {});
     const newLog = {
       id: `aud-${Date.now()}`,
       caseId: currentCase.id,
@@ -151,7 +154,25 @@ export const App: React.FC = () => {
 
   const handleAddEntity = (ent: Entity) => {
     setEntities([ent, ...entities]);
+    saveEntityToPostgres(ent).catch(() => {});
   };
+
+  // Dynamic Case-Aware State for Relationship Graph, Entities & Timeline
+  const activeEntities = useMemo(() => {
+    const caseSpecific = entities.filter(e => e.caseId === selectedCurriculumCase.id);
+    if (caseSpecific.length > 0) return caseSpecific;
+    return getCaseEntities(selectedCurriculumCase.id, selectedCurriculumCase.target, selectedCurriculumCase.title);
+  }, [entities, selectedCurriculumCase]);
+
+  const activeRelationships = useMemo(() => {
+    return getCaseRelationships(selectedCurriculumCase.id, activeEntities);
+  }, [selectedCurriculumCase, activeEntities]);
+
+  const activeTimeline = useMemo(() => {
+    const caseSpecific = timeline.filter(t => t.caseId === selectedCurriculumCase.id);
+    if (caseSpecific.length > 0) return caseSpecific;
+    return getCaseTimeline(selectedCurriculumCase.id, selectedCurriculumCase.target);
+  }, [timeline, selectedCurriculumCase]);
 
   const handlePromoteLead = (lead: Lead) => {
     setLeads(leads.map(l => l.id === lead.id ? { ...l, status: 'PROMOTED_TO_EVIDENCE' } : l));
@@ -347,28 +368,28 @@ export const App: React.FC = () => {
 
           {activeView === 'ENTITIES' && (
             <EntityResolutionView
-              entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
+              entities={activeEntities}
               onConfirmEntity={handleConfirmEntity}
             />
           )}
 
           {activeView === 'RELATIONSHIPS' && (
             <RelationshipGraphView
-              entities={entities.filter(e => e.caseId === currentCase.id || e.caseId === 'case-001')}
-              relationships={relationships}
+              entities={activeEntities}
+              relationships={activeRelationships}
               onAddEntity={handleAddEntity}
             />
           )}
 
           {activeView === 'EVIDENCE' && (
             <EvidenceRepositoryView
-              evidence={evidence.filter(ev => ev.caseId === currentCase.id || ev.caseId === 'case-001')}
+              evidence={evidence.filter(ev => ev.caseId === currentCase.id || ev.caseId === selectedCurriculumCase.id || ev.caseId === 'case-001')}
             />
           )}
 
           {activeView === 'TIMELINE' && (
             <TimelineView
-              timeline={timeline.filter(t => t.caseId === currentCase.id || t.caseId === 'case-001')}
+              timeline={activeTimeline}
             />
           )}
 

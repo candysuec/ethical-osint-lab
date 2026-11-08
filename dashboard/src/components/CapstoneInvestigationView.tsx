@@ -322,7 +322,7 @@ export const CapstoneInvestigationView: React.FC<CapstoneInvestigationViewProps>
       {/* Portfolio Certificate Modal */}
       {showCertificate && (
         <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-cyber-900 border-2 border-amber-500/80 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative space-y-5 animate-in zoom-in-95 duration-150">
+          <div className="printable-document bg-cyber-900 border-2 border-amber-500/80 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative space-y-5 animate-in zoom-in-95 duration-150">
             <div className="text-center space-y-2">
               <div className="w-16 h-16 rounded-full bg-amber-500/10 border-2 border-amber-400 flex items-center justify-center mx-auto text-amber-400">
                 <Award className="w-8 h-8" />

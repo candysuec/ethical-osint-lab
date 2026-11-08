@@ -1,62 +1,75 @@
 # 📖 Student & Instructor Operational Field Manual: Complete System Walkthrough & Training Scenarios
-**Standard Reference:** `OSINT-FIELD-MANUAL-01`  
+**Standard Reference:** `OSINT-FIELD-MANUAL-02`  
 **Classification:** `PUBLIC / TLP:CLEAR`  
 **Target Platform:** Sovereign OSINT Analyst Workbench (`http://localhost:5180`)  
-**Associated Daemon:** Containerized Tool Runner (`http://127.0.0.1:5002`)  
+**Backend REST & Tool Daemon:** Containerized Tool & DB Runner (`http://127.0.0.1:5002`)  
+**Persistent Database:** PostgreSQL 16 (`localhost:5432`, DB: `sovereign_osint`)  
+**Automated Recon Engine:** SpiderFoot (`http://localhost:5001`)  
 **Standard Authority:** Evidra Technologies LLC & CandySueC LLC  
 **Author:** Candy Chevalier  
+**Version:** 2.3.0 Commercial Release (November 2026)
 
 ---
 
 ## 🎯 1. System Mission: What This Laboratory Actually Is
 
-The **Sovereign Ethical OSINT Laboratory** is a defensive cybersecurity intelligence workstation designed to train aspiring analysts, career changers, and junior SOC operators how to perform **defensible, audit-ready digital footprint investigations** using strictly legal, passive open-source tradecraft.
+The **Sovereign Ethical OSINT Laboratory** is a commercial-grade defensive cybersecurity intelligence workstation designed to train aspiring analysts, career changers, and SOC operators how to perform **defensible, audit-ready digital footprint investigations** using strictly legal, passive open-source tradecraft.
 
 Unlike automated scanners that produce overwhelming dumps of low-quality alerts, this system trains you in the **7-Phase Professional Intelligence Lifecycle**:
-1. **Scope & PIRs:** Defining explicit Priority Intelligence Requirements and affirming CFAA ethical boundaries.
-2. **Passive Collection:** Running non-intrusive queries (`dig`, `whois`, `crt.sh`, `exiftool`, `wayback`).
+1. **Scope & PIRs:** Defining explicit Priority Intelligence Requirements and affirming CFAA / Computer Misuse Act ethical boundaries.
+2. **Passive Collection:** Running non-intrusive queries (`dig`, `whois`, `crt.sh`, `exiftool`, `SpiderFoot`).
 3. **Chain of Custody:** Immediately calculating ISO/IEC 27037 SHA-256 cryptographic checksums of raw evidence.
 4. **Admiralty Triangulation:** Enforcing the Two-Source Rule and rating findings using the NATO STANAG 2022 $6 \times 6$ matrix ($A1$ to $F6$).
 5. **Entity Disambiguation:** Resolving multi-tenant digital identities without jumping to false assumptions.
-6. **Executive & SOC Reporting:** Compiling executive BLUF briefings and production SIGMA detection rules.
-7. **OPSEC Teardown:** Maintaining immutable session logs.
+6. **Executive & SOC Reporting:** Compiling executive BLUF briefings, verifiable audit trails, and production SIGMA detection rules.
+7. **OPSEC Teardown:** Maintaining immutable session logs with Zero Private Citizen Profiling.
 
 ---
 
 ## 🖥️ 2. Interface Anatomy: How to Navigate the Workbench
 
-When you open **`http://localhost:5180`**, the interface is organized into a permanent, predictable layout:
+When you open **`http://localhost:5180`**, the interface provides full navigation across 16 specialized intelligence subsystems:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│ [🛡️ SOVEREIGN // OSINT]  [📂 Case 02: DNS & Mail Security (fastly.com) - Switch Case]  [Progress 2/30] │
+│ [🛡️ SOVEREIGN // OSINT ACADEMY]  [Tabs: Academy Hub | Active Console | Capstone | Tools | EXIF | Graph] │
+│ Target: CASE-BEG-002: fastly.com                                          DB: CONNECTED | SF: ONLINE   │
 ├──────────────────────────────┬─────────────────────────────────────────────────────────────────────────┤
-│ SIDEBAR NAVIGATION           │ CASE INVESTIGATION CONSOLE                                              │
+│ SIDEBAR NAVIGATION           │ CASE INVESTIGATION CONSOLE / SPECIALIZED VIEW                           │
 │                              ├──────────────────────────┬──────────────────────────────┬───────────────┤
-│ ── WORKFLOW ──               │ PILLAR 1: SCOPE & PIRs   │ PILLAR 2: TOOL EXECUTION     │ PILLAR 3:     │
-│ • Active Case Console (Here) │                          │                              │ CHAIN OF      │
-│ • Tool Sandbox               │ Priority Question:       │ Live Command:                │ CUSTODY       │
-│ • Case Portfolio             │ "Can attackers spoof     │ $ dig +noall +answer TXT...  │               │
-│ • Indicator Intake           │  executive emails?"      │                              │ SHA-256 Hash  │
-│ • Lead Queue                 │                          │ [ ⚡ Run Query (Ctrl+Enter) ] │ NATO Rating   │
-│                              │ Target: fastly.com       │                              │ Two-Source    │
-│ ── EVIDENCE & ANALYSIS ──    │                          │ Live Terminal Window:        │ Gate (2/2)    │
-│ • Evidence Vault (SHA-256)   │ Ethical Red Lines:       │ "v=DMARC1; p=reject;..."     │               │
-│ • Entity Resolution          │ ✓ 100% Passive DNS root  │                              │ [ Commit to   │
-│ • Relationship Graph         │ ✕ Zero port scanning     │ 🔎 Plain-English Decoder     │   Vault ]     │
-│ • Timeline Analysis          │ ✕ Zero citizen profiling │ Explains security impact     │               │
-│ • Gap Analysis               │                          │                              │ [ View Full   │
-│                              │                          │                              │   Report ]    │
-│ ── DELIVERABLES ──           │                          │                              │ [ Dossier JSON│
-│ • Executive Reports          │                          │                              │   Export ]    │
+│ ── ACADEMY WORKFLOW ──       │ PILLAR 1: SCOPE & PIRs   │ PILLAR 2: TOOL EXECUTION     │ PILLAR 3:     │
+│ • Academy Command Center     │                          │                              │ CHAIN OF      │
+│ • Active Case Console        │ Priority Question:       │ Live Command:                │ CUSTODY       │
+│ • Guided Lifecycle (6-Stage) │ "Can attackers spoof     │ $ dig +noall +answer TXT...  │               │
+│ • Mission Control (30 Cases) │  executive emails?"      │                              │ SHA-256 Hash  │
+│                              │                          │ [ ⚡ Run Query (Ctrl+Enter) ] │ NATO Rating   │
+│ ── WORKBENCHES ──            │ Target: fastly.com       │                              │ Two-Source    │
+│ • Tool Sandbox & SpiderFoot  │                          │ Live Terminal Window:        │ Gate (2/2)    │
+│ • EXIF Metadata Dropzone     │ Ethical Red Lines:       │ "v=DMARC1; p=reject;..."     │               │
+│ • Indicator Intake           │ ✓ 100% Passive DNS root  │                              │ [ Commit to   │
+│ • Lead Queue                 │ ✕ Zero port scanning     │ 🔎 Plain-English Decoder     │   PostgreSQL] │
+│                              │ ✕ Zero citizen profiling │ Explains security impact     │               │
+│ ── ASSURANCE & ANALYSIS ──   │                          │                              │ [ View Full   │
+│ • Evidence Vault (PostgreSQL)│                          │                              │   Report ]    │
+│ • Source Reliability (NATO)  │                          │                              │ [ Dossier JSON│
+│ • Confidence Engine (Math CI)│                          │                              │   Export ]    │
+│ • Entity Resolution          │                          │                              │               │
+│ • Relationship Graph         │                          │                              │               │
+│ • Timeline Analysis          │                          │                              │               │
+│ • Gap Analysis               │                          │                              │               │
+│                              │                          │                              │               │
+│ ── GOVERNANCE & EXPORT ──    │                          │                              │               │
+│ • Executive Reports          │                          │                              │               │
+│ • Capstone Diploma View      │                          │                              │               │
 │ • Audit Trail & Logs         │                          │                              │               │
 └──────────────────────────────┴──────────────────────────┴──────────────────────────────┴───────────────┘
 ```
 
 ### Universal Keyboard Shortcuts
 * **`Ctrl + Enter` (or `Cmd + Enter`):** Immediately executes the active tool query.
-* **`Ctrl + S` (or `Cmd + S`):** Commits the verified finding directly into the Sovereign Evidence Vault.
+* **`Ctrl + S` (or `Cmd + S`):** Commits the verified finding directly into the PostgreSQL Evidence Vault.
 * **`Ctrl + K` (or `Cmd + K`):** Opens the 30-case curriculum browser modal.
+* **`Ctrl + P` (or `Cmd + P`):** Opens print dialog formatted with `@media print` clean layout.
 
 ---
 
@@ -85,12 +98,12 @@ When you open **`http://localhost:5180`**, the interface is organized into a per
    * It translates `p=reject` into plain business language: *"The domain has instructed global receiving mailboxes to drop unauthenticated messages at the SMTP boundary. Attackers cannot spoof emails from this domain."*
 
 #### Step 3: Verify Chain of Custody & Corroborate (Pillar 3)
-1. Inspect the **Dynamic SHA-256 Checksum:** Notice the cryptographic hash automatically generated from the stdout string using the Web Crypto API. Click `Copy` to save the hash to your clipboard.
-2. Note the initial **NATO STANAG 2022 Rating:** It starts at `A2 (Uncorroborated Lead)` because only one source was queried.
+1. Inspect the **Dynamic SHA-256 Checksum:** Cryptographic hash automatically generated from the stdout string using the Web Crypto API. Click `Copy` to save the hash to your clipboard.
+2. Note the initial **NATO STANAG 2022 Rating:** Starts at `A2 (Uncorroborated Lead)` because only one source was queried.
 3. Apply the **Two-Source Rule:** Click on **`Source 2: RFC 7489 Secondary Registry`**.
-   * The status changes to **`2/2 VERIFIED`**, and the rating elevates to **`A1 (Confirmed Fact)`**.
+   * Status changes to **`2/2 VERIFIED`**, and rating elevates to **`A1 (Confirmed Fact)`**.
 4. Click **`[ 💾 Commit Evidence to Vault ]`** (or press **`Ctrl+S`**).
-   * The finding is permanently committed into the local database and stored in `localStorage`.
+   * The finding is permanently committed into PostgreSQL 16 `:5432` and synchronized with the frontend.
 5. Click **`[ 📦 Dossier JSON ]`** to download an ISO/IEC 27037-compliant JSON evidence package.
 
 ---
@@ -100,7 +113,7 @@ When you open **`http://localhost:5180`**, the interface is organized into a per
 * **Estimated Time:** 8 Minutes
 
 #### Step 1: Switch Case
-1. Press **`Ctrl+K`** (or click **`Browse 30 Cases`** in the header).
+1. Press **`Ctrl+K`** (or click **`Academy Hub`** in the top navigation).
 2. Select **Case 03: Certificate Transparency Log Excavation** (`cloudflare.com`).
 
 #### Step 2: Query the Public Cryptographic Logbook
@@ -128,7 +141,7 @@ When you open **`http://localhost:5180`**, the interface is organized into a per
 * **Estimated Time:** 10 Minutes
 
 #### Step 1: Launch Case 22
-1. Press **`Ctrl+K`**, click the **Tier 3: Advanced** tab, and select **Case 22: Brand Impersonation & Typosquatting Threat Matrix**.
+1. Go to **Academy Hub**, click the **ADVANCED** tier tab, and select **Case 22: Brand Impersonation & Typosquatting Threat Matrix**.
 
 #### Step 2: Analyze Algorithmic Permutations
 1. Pillar 2 executes an algorithmic permutation analysis:
@@ -149,40 +162,70 @@ When you open **`http://localhost:5180`**, the interface is organized into a per
 
 ---
 
-## 🗄️ 4. Overview of the Other Subsystems
+### 🎓 Scenario D (Capstone): Enterprise IPO Surface Audit & Graduation Diploma
+* **Goal:** Execute an end-to-end multi-disciplinary defensive audit on `Aether Dynamics Global Corporation` (CASE-2026-0891) and earn your graduation certificate.
+* **Estimated Time:** 15 Minutes
+
+#### Step 1: Launch Capstone
+1. Click **Capstone** in the top navigation or sidebar.
+2. Review the mission dossier:
+   * Target: `Aether Dynamics Global Corporation`
+   * Classification: `TLP:AMBER`
+   * Scope: SEC Exhibit 21 mapping, dangling cloud CNAMEs, shadow staging portals, and SPF/DMARC posture.
+
+#### Step 2: Complete the 4 Technical Exercises
+1. **Exercise 1 (Corporate Structure):** Analyze SEC EDGAR 10-K Exhibit 21 disclosures to map off-shore subsidiaries.
+2. **Exercise 2 (DNS & Perimeter):** Query DNS TXT records to uncover dangling CNAMEs pointing to orphaned AWS S3/Azure blobs.
+3. **Exercise 3 (Certificate Transparency):** Extract cryptographic subdomains from `crt.sh` to uncover shadow dev clusters.
+4. **Exercise 4 (Disambiguation):** Distinguish corporate subsidiaries from unrelated entities sharing similar corporate monikers.
+
+#### Step 3: Review Scoring Rubric & Print Diploma
+1. Review your real-time score calculated against NIST SP 800-115 and ISO/IEC 27037 standards.
+2. Once passing requirements are met (70%+), the **Graduation Diploma** is unlocked.
+3. Click **`[ 🖨️ Print / Save Diploma ]`** to export your certificate with official validation watermark and cryptographic hash.
+
+---
+
+## 🗄️ 4. Master Catalog of Subsystems
 
 | Subsystem | Location | What You Do Here |
 | :--- | :--- | :--- |
-| **Tool Sandbox** | Sidebar $\rightarrow$ *Tool Sandbox* | Test queries freely with `dig`, `whois`, `crt.sh`, `robots.txt`, `exiftool`, `wayback`, and `BGPView` without being tied to a specific case. |
-| **Indicator Intake** | Sidebar $\rightarrow$ *Indicator Intake* | Ingest a raw lead (Domain, IP, Hash, Email, or Organization). The system screens it against ethical boundaries and normalizes the format. |
-| **Lead Queue** | Sidebar $\rightarrow$ *Lead Queue* | Triage incoming indicators. Promote verified leads into official case evidence or dismiss irrelevant false positives. |
-| **Evidence Vault** | Sidebar $\rightarrow$ *Evidence Vault* | The master ISO/IEC 27037 ledger. Inspect raw artifact paths, UTC timestamps, verified viewport tags, and SHA-256 hashes. |
-| **Entity Resolution** | Sidebar $\rightarrow$ *Entity Resolution* | Disambiguate homoglyphs and candidate collisions (e.g. John Smith Company A vs John Smith Company B). Auto-confirmation is permanently disabled. |
-| **Relationship Graph** | Sidebar $\rightarrow$ *Relationship Graph* | Interactive link analysis displaying connected entities across 7 property buckets with NATO Admiralty edge weights. |
-| **Timeline Analysis** | Sidebar $\rightarrow$ *Timeline Analysis* | Chronological event reconstruction showing how infrastructure changed over time. |
-| **Executive Reports** | Sidebar $\rightarrow$ *Executive Reports* | Export standardized Markdown dossiers, SIGMA detection rules, and print-ready PDFs. |
+| **Academy Command Center** | Top Nav $\rightarrow$ *Academy Hub* | Browse all 30 graded curriculum cases across Beginner, Intermediate, and Advanced tiers with search and 1-click launch. |
+| **Active Case Console** | Top Nav $\rightarrow$ *Active Console* | The primary 3-pillar analyst workspace: Scope & PIRs, Live Tool Execution, and ISO/IEC 27037 Chain of Custody. |
+| **Guided Lifecycle** | Sidebar $\rightarrow$ *Guided Lifecycle* | 6-Stage sequential OSINT operational workflow stepper with phase checklists and validation gates. |
+| **Mission Control** | Sidebar $\rightarrow$ *Mission Control* | Interactive mission browser featuring command line decoders and 30 technical knowledge-check quizzes. |
+| **Tool Sandbox & SpiderFoot** | Top Nav $\rightarrow$ *Tools* | Run live defensive tools (`dig`, `whois`, `crt.sh`) or connect to the live SpiderFoot reconnaissance engine on port `:5001`. |
+| **EXIF Metadata Dropzone** | Top Nav $\rightarrow$ *EXIF Dropzone* | Browser-native drag-and-drop file analyzer. Extracts EXIF tags, calculates SHA-256 hashes, and scrubs sensitive GPS coordinates. |
+| **Indicator Intake** | Sidebar $\rightarrow$ *Indicator Intake* | Ingest raw indicators (Domains, IPs, Hashes). Screens against ethical red lines and normalizes formatting. |
+| **Lead Queue** | Sidebar $\rightarrow$ *Lead Queue* | Triage and triage incoming intelligence leads. Promote validated leads directly to case evidence. |
+| **Evidence Vault** | Sidebar $\rightarrow$ *Evidence Vault* | The central PostgreSQL 16 evidence ledger. Review verified SHA-256 hashes, viewport screenshots, and NATO ratings. |
+| **Source Reliability** | Sidebar $\rightarrow$ *Source Reliability* | Interactive NATO STANAG 2022 $6 \times 6$ Admiralty Matrix ($A1$ to $F6$) evaluation workbench. |
+| **Confidence Engine** | Sidebar $\rightarrow$ *Confidence Engine* | Mathematical Confidence Index ($CI = \sum(w_i \cdot s_i)$) calculator with source weightings and gap penalties. |
+| **Entity Resolution** | Sidebar $\rightarrow$ *Entity Resolution* | Disambiguate identities and multi-tenant assets. Automated resolution is permanently disabled to prevent false attribution. |
+| **Relationship Graph** | Top Nav $\rightarrow$ *Graph* | Interactive link analysis displaying connected nodes across 7 categories with dynamic case filtering. |
+| **Timeline Analysis** | Sidebar $\rightarrow$ *Timeline Analysis* | Chronological reconstruction of infrastructure modifications, certificate issuances, and registration events. |
+| **Gap Analysis** | Sidebar $\rightarrow$ *Gap Analysis* | Structured identification of missing intelligence items and uncorroborated single-source leads. |
+| **Executive Reports** | Sidebar $\rightarrow$ *Executive Reports* | Generate C-suite BLUF summaries, evidence manifests, and production SIGMA detection rules. |
+| **Capstone Diploma** | Top Nav $\rightarrow$ *Capstone* | Comprehensive multi-disciplinary simulation culminating in an audit-ready, printable graduation certificate. |
 | **Audit Trail & Logs** | Sidebar $\rightarrow$ *Audit Trail & Logs* | Immutable audit history recording every query, promotion, and analyst resolution. |
 
 ---
 
-## 📋 5. What Remains on the Product Roadmap
+## 🔒 5. Ethical & Operational Boundaries
 
-While the core training environment and live execution engine are complete, the following roadmap enhancements are scheduled for upcoming development waves:
-
-1. **Option 2: Capstone Operation Horizon Shield (`docs/12_CAPSTONE_INVESTIGATION.md`)**:
-   * An end-to-end multi-week enterprise simulation auditing `Aether Dynamics Global Corporation` prior to an IPO.
-2. **Interactive Relationship Graph Transforms**:
-   * Right-click node expansion (Maltego-style) allowing analysts to pivot directly from an IP node to its associated ASN and DNS records on the visual canvas.
-3. **Multi-Modal Image & EXIF Drag-and-Drop Ingestion**:
-   * A frontend drag-and-drop dropzone in the Tool Sandbox to extract and hash metadata from local PDF and image files in the browser.
-4. **PostgreSQL Production Sync**:
-   * A backend sync daemon that bridges client `localStorage` changes directly into the PostgreSQL container (`osint_postgres` on port `:5432`) for multi-analyst collaboration.
+Every analyst operating this workbench must strictly observe the **Four Non-Negotiable Invariants**:
+1. **100% Passive Defensive Reconnaissance:** Only query authoritative publicly available sources (DNS root servers, public Certificate Transparency logs, SEC EDGAR, WHOIS registries).
+2. **Zero Active Port Probing:** Active scanning tools such as `nmap`, vulnerability exploits, and login brute-forcing are strictly banned.
+3. **Zero Private Citizen Profiling:** Do not harvest personal PII, home addresses, family members, or non-corporate digital footprints.
+4. **Mandatory Corroboration:** No raw lead may be cited as a factual intelligence finding without independent corroboration under the **Two-Source Rule**.
 
 ---
 
-### Quick Verification Checklist for Students
+### Verification Checklist for Students & Instructors
 * [ ] Is the dashboard responding on `http://localhost:5180`?
 * [ ] Is the tool execution daemon active on `http://127.0.0.1:5002`?
-* [ ] Did you practice using `Ctrl+Enter` to run a live query?
+* [ ] Is PostgreSQL 16 responding on port `:5432`?
+* [ ] Is SpiderFoot responding on `http://localhost:5001`?
+* [ ] Did you practice running a live query using `Ctrl+Enter`?
 * [ ] Did you verify Source 2 in the Two-Source Gate before committing evidence?
-* [ ] Did you test generating a PDF via `Print / Save PDF` in the Executive Report view?
+* [ ] Did you test generating a PDF via `Print / Save PDF` in Executive Reports or Capstone?
