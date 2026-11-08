@@ -5,6 +5,24 @@ This changelog strictly adheres to [Keep a Changelog](https://keepachangelog.com
 
 ---
 
+## [2.2.0] - 2026-11-08 (Restoration & Unified Integration of All Platform Workspaces)
+
+### Added
+- **Restored & Connected All Core Subsystems in Navigation (`Sidebar.tsx`, `App.tsx`):**
+  - **6-Stage Lifecycle Stepper (`GuidedLifecycleView.tsx`):** Full operational walkthrough spanning Target Scoping, Digital Mapping, Passive Collection, Entity Resolution, Correlation & Dissemination.
+  - **Missions & Knowledge Checks (`MissionControlView.tsx`):** Interactive scenario-based training with step-by-step stdout decoders, multiple-choice quizzes, and XP rewards across all 30 cases.
+  - **NATO STANAG 2022 6×6 Matrix (`SourceReliabilityView.tsx`):** Joint Intelligence Standard interactive Admiralty evaluator mapping Source Reliability (A–F) and Information Credibility (1–6).
+  - **Mathematical Confidence Scoring Engine (`ConfidenceEngineView.tsx`):** Algorithmic scoring formula eliminating cognitive bias with dynamic weights and temporal staleness penalties.
+- **Reorganized Sidebar Navigation into 4 Intuitive Clusters:**
+  1. *Academy & Training Workflow:* Academy Hub (30 Cases), Active Case Console, 6-Stage Lifecycle Stepper, Missions & Quizzes, Operation Horizon Shield Capstone.
+  2. *Active Investigative Workbenches:* OSINT Tool Sandbox, EXIF & Document Ingestion, Indicator Intake, Lead Queue, Entity Resolution, Relationship Graph, Timeline Analysis.
+  3. *NATO STANAG & Evidence Assurance:* NATO STANAG 6×6 Matrix, Confidence Scoring Engine, Evidence Vault (SHA-256), Gap Analysis.
+  4. *Intelligence Deliverables & Governance:* Executive Reports, Case Portfolio, Audit Trail & Logs, Analyst Notes, AI Research Assistant.
+- **Expanded Command Center Launchpad (`AcademyDashboardView.tsx`):**
+  - Added dedicated 1-click launchpad cards for all 12 platform subsystems directly on the home dashboard.
+
+---
+
 ## [2.1.0] - 2026-11-08 (Executive Academy Command Center & 30-Case Curriculum Catalog Grid)
 
 ### Added

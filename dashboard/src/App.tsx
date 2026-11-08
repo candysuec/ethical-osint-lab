@@ -20,6 +20,10 @@ import { GapAnalysisView } from './components/GapAnalysisView';
 import { CapstoneInvestigationView } from './components/CapstoneInvestigationView';
 import { ExifDropzoneView } from './components/ExifDropzoneView';
 import { AcademyDashboardView } from './components/AcademyDashboardView';
+import { GuidedLifecycleView } from './components/GuidedLifecycleView';
+import { MissionControlView } from './components/MissionControlView';
+import { SourceReliabilityView } from './components/SourceReliabilityView';
+import { ConfidenceEngineView } from './components/ConfidenceEngineView';
 
 import { 
   initialCases, initialEntities, initialRelationships, 
@@ -66,6 +70,7 @@ export const App: React.FC = () => {
   // Modals
   const [showQuickIntakeModal, setShowQuickIntakeModal] = useState<boolean>(false);
   const [showGuideModal, setShowGuideModal] = useState<boolean>(false);
+  const [lifecycleStage, setLifecycleStage] = useState<number>(1);
 
   // Automatically persist state changes to localStorage
   useEffect(() => {
@@ -105,6 +110,13 @@ export const App: React.FC = () => {
     if (currentIndex >= 0 && currentIndex < missionsData.length - 1) {
       setSelectedCurriculumCase(missionsData[currentIndex + 1]);
     }
+  };
+
+  const handleCompleteMissionFromControl = (missionId: string, _earnedXp: number, evidenceItem: EvidenceItem) => {
+    if (!completedCaseIds.includes(missionId)) {
+      setCompletedCaseIds([...completedCaseIds, missionId]);
+    }
+    setEvidence([evidenceItem, ...evidence]);
   };
 
   const handleAddLead = (newLead: Lead) => {
@@ -258,6 +270,33 @@ export const App: React.FC = () => {
             />
           )}
 
+          {activeView === 'LIFECYCLE' && (
+            <GuidedLifecycleView
+              currentCase={currentCase}
+              activeStage={lifecycleStage}
+              onSetStage={setLifecycleStage}
+              leads={leads}
+              entities={entities}
+              evidence={evidence}
+              sources={sources}
+              timeline={timeline}
+              report={report}
+              onPromoteLead={handlePromoteLead}
+              onConfirmEntity={handleConfirmEntity}
+              onOpenIntake={() => setShowQuickIntakeModal(true)}
+              onSwitchToStudio={() => setActiveView('TOOLS')}
+            />
+          )}
+
+          {activeView === 'MISSION_CONTROL' && (
+            <MissionControlView
+              completedMissionIds={completedCaseIds}
+              onCompleteMission={handleCompleteMissionFromControl}
+              onOpenStudio={() => setActiveView('TOOLS')}
+              onOpenGuide={() => setShowGuideModal(true)}
+            />
+          )}
+
           {activeView === 'CAPSTONE' && (
             <CapstoneInvestigationView
               onOpenReport={() => setActiveView('REPORT')}
@@ -363,6 +402,16 @@ export const App: React.FC = () => {
               gaps={gaps.filter(g => g.caseId === currentCase.id || g.caseId === 'case-001')}
               onResolveGap={handleResolveGap}
             />
+          )}
+
+          {activeView === 'ADMIRALTY_MATRIX' && (
+            <SourceReliabilityView
+              sources={sources}
+            />
+          )}
+
+          {activeView === 'CONFIDENCE_ENGINE' && (
+            <ConfidenceEngineView />
           )}
         </main>
       </div>

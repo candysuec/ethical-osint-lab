@@ -3,7 +3,7 @@ import {
   Shield, Award, Terminal, Wrench, Network, FileCheck, 
   Search, ArrowRight, Play, CheckCircle2, AlertTriangle, 
   ExternalLink, Layers, Sparkles, Filter, Lock, BookOpen,
-  FolderKanban, Activity, Compass, Database, Check
+  FolderKanban, Activity, Compass, Database, Check, Calculator, CheckSquare
 } from 'lucide-react';
 import { missionsData, Mission } from '../data/missionsData';
 import { SubsystemView } from './Sidebar';
@@ -449,6 +449,114 @@ export const AcademyDashboardView: React.FC<AcademyDashboardViewProps> = ({
             </div>
             <div className="pt-2 border-t border-cyber-border/60 text-[11px] font-mono text-slate-400 flex items-center gap-1">
               TLP:CLEAR to TLP:AMBER Enclaves
+            </div>
+          </div>
+
+          {/* Workspace 9: 6-Stage Operational Stepper */}
+          <div 
+            onClick={() => onNavigateToView('LIFECYCLE')}
+            className="group cursor-pointer bg-cyber-900 hover:bg-cyber-850 border border-purple-500/30 hover:border-purple-400 rounded-xl p-5 transition-all duration-200 shadow-sm hover:shadow-purple-500/10 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="p-2.5 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/30 group-hover:scale-110 transition-transform">
+                <Compass className="w-5 h-5" />
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                6 Stages
+              </span>
+            </div>
+            <div>
+              <h3 className="font-mono text-sm font-bold text-white group-hover:text-purple-300 transition-colors flex items-center justify-between">
+                6-Stage Lifecycle Stepper
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Step-by-step walkthrough across Target Scoping, Digital Mapping, Passive Collection, Entity Resolution, Correlation & Dissemination.
+              </p>
+            </div>
+            <div className="pt-2 border-t border-cyber-border/60 text-[11px] font-mono text-purple-300 flex items-center gap-1">
+              Full Intelligence Lifecycle
+            </div>
+          </div>
+
+          {/* Workspace 10: Missions & Knowledge Checks */}
+          <div 
+            onClick={() => onNavigateToView('MISSION_CONTROL')}
+            className="group cursor-pointer bg-cyber-900 hover:bg-cyber-850 border border-cyan-500/30 hover:border-cyan-400 rounded-xl p-5 transition-all duration-200 shadow-sm hover:shadow-cyan-500/10 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="p-2.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 group-hover:scale-110 transition-transform">
+                <CheckSquare className="w-5 h-5" />
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                Interactive Quizzes
+              </span>
+            </div>
+            <div>
+              <h3 className="font-mono text-sm font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center justify-between">
+                Missions & Knowledge Checks
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Hands-on scenario training with step-by-step stdout decoders, interactive multiple-choice verification quizzes, and badge rewards.
+              </p>
+            </div>
+            <div className="pt-2 border-t border-cyber-border/60 text-[11px] font-mono text-cyan-400 flex items-center gap-1">
+              30 Case Quizzes + XP Engine
+            </div>
+          </div>
+
+          {/* Workspace 11: NATO STANAG 6×6 Matrix */}
+          <div 
+            onClick={() => onNavigateToView('ADMIRALTY_MATRIX')}
+            className="group cursor-pointer bg-cyber-900 hover:bg-cyber-850 border border-amber-500/30 hover:border-amber-400 rounded-xl p-5 transition-all duration-200 shadow-sm hover:shadow-amber-500/10 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="p-2.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 group-hover:scale-110 transition-transform">
+                <Award className="w-5 h-5" />
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                STANAG 2022
+              </span>
+            </div>
+            <div>
+              <h3 className="font-mono text-sm font-bold text-white group-hover:text-amber-300 transition-colors flex items-center justify-between">
+                NATO STANAG 6×6 Matrix
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Interactive Admiralty evaluation matrix mapping Source Reliability (A–F) and Information Credibility (1–6) across all intelligence.
+              </p>
+            </div>
+            <div className="pt-2 border-t border-cyber-border/60 text-[11px] font-mono text-amber-300 flex items-center gap-1">
+              Interactive 6×6 Matrix Explorer
+            </div>
+          </div>
+
+          {/* Workspace 12: Mathematical Confidence Scoring Engine */}
+          <div 
+            onClick={() => onNavigateToView('CONFIDENCE_ENGINE')}
+            className="group cursor-pointer bg-cyber-900 hover:bg-cyber-850 border border-cyber-border hover:border-cyan-500/50 rounded-xl p-5 transition-all duration-200 shadow-sm space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className="p-2.5 rounded-lg bg-cyber-800 text-slate-300 border border-cyber-border group-hover:scale-110 transition-transform">
+                <Calculator className="w-5 h-5" />
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                Formula Engine
+              </span>
+            </div>
+            <div>
+              <h3 className="font-mono text-sm font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center justify-between">
+                Confidence Scoring Engine
+                <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Algorithmic scoring avoiding cognitive bias. Computes Confidence Index (CI) with dynamic weights, corroboration factor, and staleness penalties.
+              </p>
+            </div>
+            <div className="pt-2 border-t border-cyber-border/60 text-[11px] font-mono text-slate-400 flex items-center gap-1">
+              Objective Algorithmic Index
             </div>
           </div>
         </div>

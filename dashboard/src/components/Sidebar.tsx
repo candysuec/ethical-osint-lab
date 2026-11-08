@@ -3,23 +3,27 @@ import {
   FolderKanban, Inbox, GitMerge, Network, FileCheck,
   History, FileText, Activity, StickyNote, 
   Sparkles, AlertOctagon, Terminal, Shield, Wrench, X, Award, FileSearch,
-  LayoutDashboard, Compass
+  LayoutDashboard, Compass, Calculator, Sliders, CheckSquare, BookOpen, Layers
 } from 'lucide-react';
 
 export type SubsystemView = 
-  | 'DASHBOARD'     // Executive Academy Command Center & 30-case curriculum matrix
-  | 'INVESTIGATION' // The unified case investigation console
-  | 'CAPSTONE'      // Operation Horizon Shield Pre-IPO Audit Capstone
-  | 'TOOLS'         // The tool sandbox
-  | 'EXIF_INSPECTOR'// Drag & drop client-side EXIF & document analyzer
-  | 'CASES'         // Multi-case portfolio manager
-  | 'INTAKE'        // Ingest new indicator
-  | 'LEADS'         // Lead queue
+  | 'DASHBOARD'         // Executive Academy Command Center & 30-case curriculum matrix
+  | 'INVESTIGATION'     // The unified case investigation console
+  | 'LIFECYCLE'         // 6-Stage OSINT Operational Lifecycle Stepper
+  | 'MISSION_CONTROL'   // Guided missions, quizzes & knowledge checks
+  | 'CAPSTONE'          // Operation Horizon Shield Pre-IPO Audit Capstone
+  | 'TOOLS'             // The tool sandbox
+  | 'EXIF_INSPECTOR'    // Drag & drop client-side EXIF & document analyzer
+  | 'CASES'             // Multi-case portfolio manager
+  | 'INTAKE'            // Ingest new indicator
+  | 'LEADS'             // Lead queue
   | 'ENTITIES'      // Entity resolution
   | 'RELATIONSHIPS' // Link graph
   | 'EVIDENCE'      // Evidence vault
   | 'TIMELINE'      // Timeline analysis
   | 'GAPS'          // Gap analysis
+  | 'ADMIRALTY_MATRIX'  // NATO STANAG 2022 6x6 Admiralty Matrix
+  | 'CONFIDENCE_ENGINE' // Mathematical Confidence Index Calculator
   | 'REPORT'        // Executive report generator
   | 'AUDIT'         // Audit logs
   | 'NOTES'         // Notes
@@ -48,7 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const sections = [
     {
-      category: 'INVESTIGATION WORKFLOW',
+      category: 'ACADEMY & TRAINING WORKFLOW',
       items: [
         { 
           id: 'DASHBOARD' as SubsystemView, 
@@ -65,15 +69,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
           badgeColor: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
         },
         { 
+          id: 'LIFECYCLE' as SubsystemView, 
+          label: '6-Stage Lifecycle Stepper', 
+          icon: Compass, 
+          badge: '6 Stages',
+          badgeColor: 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+        },
+        { 
+          id: 'MISSION_CONTROL' as SubsystemView, 
+          label: 'Missions & Knowledge Checks', 
+          icon: CheckSquare, 
+          badge: 'Quiz Mode',
+          badgeColor: 'bg-cyan-500/20 text-cyan-300'
+        },
+        { 
           id: 'CAPSTONE' as SubsystemView, 
           label: 'Operation Horizon Shield', 
           icon: Award, 
           badge: 'Tier 4',
           badgeColor: 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-        },
+        }
+      ]
+    },
+    {
+      category: 'ACTIVE INVESTIGATIVE WORKBENCHES',
+      items: [
         { 
           id: 'TOOLS' as SubsystemView, 
-          label: 'Tool Sandbox', 
+          label: 'OSINT Tool Sandbox', 
           icon: Wrench 
         },
         { 
@@ -82,12 +105,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           icon: FileSearch, 
           badge: 'Sandbox',
           badgeColor: 'bg-emerald-500/20 text-emerald-300'
-        },
-        { 
-          id: 'CASES' as SubsystemView, 
-          label: 'Case Portfolio', 
-          icon: FolderKanban, 
-          count: counts.cases 
         },
         { 
           id: 'INTAKE' as SubsystemView, 
@@ -100,18 +117,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           icon: Terminal, 
           count: counts.leads, 
           badgeColor: 'bg-amber-500/20 text-amber-300' 
-        }
-      ]
-    },
-    {
-      category: 'EVIDENCE & CORRELATION',
-      items: [
-        { 
-          id: 'EVIDENCE' as SubsystemView, 
-          label: 'Evidence Vault (SHA-256)', 
-          icon: FileCheck, 
-          count: counts.evidence,
-          badgeColor: 'bg-emerald-500/20 text-emerald-300' 
         },
         { 
           id: 'ENTITIES' as SubsystemView, 
@@ -128,6 +133,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
           id: 'TIMELINE' as SubsystemView, 
           label: 'Timeline Analysis', 
           icon: History 
+        }
+      ]
+    },
+    {
+      category: 'NATO STANAG & EVIDENCE ASSURANCE',
+      items: [
+        { 
+          id: 'ADMIRALTY_MATRIX' as SubsystemView, 
+          label: 'NATO STANAG 6×6 Matrix', 
+          icon: Award,
+          badge: 'A1–F6',
+          badgeColor: 'bg-amber-500/20 text-amber-300'
+        },
+        { 
+          id: 'CONFIDENCE_ENGINE' as SubsystemView, 
+          label: 'Confidence Scoring Engine', 
+          icon: Calculator,
+          badge: 'Math CI',
+          badgeColor: 'bg-cyan-500/20 text-cyan-300'
+        },
+        { 
+          id: 'EVIDENCE' as SubsystemView, 
+          label: 'Evidence Vault (SHA-256)', 
+          icon: FileCheck, 
+          count: counts.evidence,
+          badgeColor: 'bg-emerald-500/20 text-emerald-300' 
         },
         { 
           id: 'GAPS' as SubsystemView, 
@@ -139,12 +170,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ]
     },
     {
-      category: 'INTELLIGENCE DELIVERABLES',
+      category: 'INTELLIGENCE DELIVERABLES & GOVERNANCE',
       items: [
         { 
           id: 'REPORT' as SubsystemView, 
           label: 'Executive Reports', 
           icon: FileText 
+        },
+        { 
+          id: 'CASES' as SubsystemView, 
+          label: 'Case Portfolio', 
+          icon: FolderKanban, 
+          count: counts.cases 
         },
         { 
           id: 'AUDIT' as SubsystemView, 
@@ -183,10 +220,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="py-4 overflow-y-auto flex-1">
         {sections.map((section, idx) => (
           <div key={idx} className="mb-5">
-            <div className="px-4 mb-2 text-[10px] font-mono tracking-widest text-slate-500 uppercase font-bold">
+            <h3 className="px-4 text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2 font-semibold">
               {section.category}
-            </div>
-            <div className="space-y-0.5 px-2">
+            </h3>
+            <div className="space-y-0.5">
               {section.items.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeView === item.id;
@@ -199,10 +236,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       if (onCloseMobile) onCloseMobile();
                     }}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-mono transition-colors focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none ${
+                    className={`w-full flex items-center justify-between px-4 py-2 text-xs font-mono transition-colors text-left focus-visible:ring-2 focus-visible:ring-cyber-cyan focus-visible:outline-none ${
                       isActive 
-                        ? 'bg-cyber-cyan/15 text-cyber-cyan border-l-2 border-cyber-cyan font-semibold' 
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-cyber-850'
+                        ? 'bg-cyber-800 text-cyber-cyan border-l-2 border-cyber-cyan font-semibold' 
+                        : 'text-slate-400 hover:bg-cyber-850 hover:text-slate-200'
                     }`}
                   >
                     <div className="flex items-center space-x-2.5 min-w-0">
@@ -210,17 +247,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <span className="truncate">{item.label}</span>
                     </div>
 
-                    {item.badge && (
-                      <span className={`text-[9px] px-1.5 py-0.2 rounded font-mono ${item.badgeColor || 'bg-cyber-800 text-slate-400'}`}>
-                        {item.badge}
-                      </span>
-                    )}
-
-                    {item.count !== undefined && (
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${item.badgeColor || 'bg-cyber-800 text-slate-400'}`}>
-                        {item.count}
-                      </span>
-                    )}
+                    <div className="flex items-center space-x-1.5 shrink-0 ml-2">
+                      {item.badge && (
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${item.badgeColor || 'bg-cyber-800 text-slate-400'}`}>
+                          {item.badge}
+                        </span>
+                      )}
+                      {item.count !== undefined && item.count > 0 && (
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                          item.badgeColor || 'bg-cyber-800 text-slate-400'
+                        }`}>
+                          {item.count}
+                        </span>
+                      )}
+                    </div>
                   </button>
                 );
               })}
@@ -235,7 +275,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>100% Passive OSINT</span>
         </span>
-        <span>v2.0.0</span>
+        <span>v2.1.0</span>
       </div>
     </div>
   );
@@ -261,13 +301,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         >
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" 
+            className="fixed inset-0 bg-cyber-950/80 backdrop-blur-sm"
             onClick={onCloseMobile}
             aria-hidden="true"
           />
-
-          {/* Slide-out Panel */}
-          <div className="relative flex-1 flex flex-col max-w-xs w-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+          {/* Off-canvas panel */}
+          <div className="relative z-10 h-full">
             {sidebarContent}
           </div>
         </div>
